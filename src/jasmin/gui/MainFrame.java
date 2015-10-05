@@ -1096,7 +1096,7 @@ public class MainFrame extends javax.swing.JFrame {
 	 */
 	private void jButton13ActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_jButton13ActionPerformed
 		document.pauseProgram();
-		Thread.yield();
+		//Thread.yield();
 		document.data.setInstructionPointer(0);
 		document.updateAll();
 		checkButtonStates();

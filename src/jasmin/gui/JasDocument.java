@@ -520,7 +520,7 @@ public final class JasDocument extends javax.swing.JPanel implements Runnable {
 
         data.updateDirty();
         running = false;
-        Thread.yield();
+        //Thread.yield();
         updateAll();
         frame.checkButtonStates();
         runningThread = null;

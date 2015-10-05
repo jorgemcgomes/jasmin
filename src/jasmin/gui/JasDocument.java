@@ -63,8 +63,8 @@ public final class JasDocument extends javax.swing.JPanel implements Runnable {
     private String lastPathCode = null;
     private String lastPathMem = null;
 
-    private File lastTempSave = null;    
-    
+    private File lastTempSave = null;
+
     /**
      * Creates a new Document.
      *
@@ -309,19 +309,22 @@ public final class JasDocument extends javax.swing.JPanel implements Runnable {
             save();
         }
     }
-    
+
     public void tempSave() {
-        File home = new File(System.getProperty("user.home"));
-        File dir = new File(home, "Jasmin");
-        dir.mkdir();
-        SimpleDateFormat df = new SimpleDateFormat("HH-mm-ss");
-        String name = "jasmin-" + df.format(new Date()) + ".asm";
-        File temp = new File(dir, name);
-        writeFile(temp);
-        if(lastTempSave != null) {
-            lastTempSave.delete();
+        int auto = frame.getProperty("autosave", 1);
+        if (auto == 1) {
+            File home = new File(System.getProperty("user.home"));
+            File dir = new File(home, "Jasmin");
+            dir.mkdir();
+            SimpleDateFormat df = new SimpleDateFormat("HH-mm-ss");
+            String name = "jasmin-" + df.format(new Date()) + ".asm";
+            File temp = new File(dir, name);
+            writeFile(temp);
+            if (lastTempSave != null) {
+                lastTempSave.delete();
+            }
+            lastTempSave = temp;
         }
-        lastTempSave = temp;
     }
 
     public void writeFile(File file) {

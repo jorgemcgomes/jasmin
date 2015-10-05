@@ -199,7 +199,6 @@
                             <Property name="text" type="java.lang.String" value="desc"/>
                             <Property name="toolTipText" type="java.lang.String" value="Show cells in descending order"/>
                             <Property name="borderPainted" type="boolean" value="false"/>
-                            <Property name="opaque" type="boolean" value="false"/>
                           </Properties>
                           <Events>
                             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="toggleButtonDescActionPerformed"/>
@@ -211,7 +210,6 @@
                             <Property name="text" type="java.lang.String" value="hex"/>
                             <Property name="toolTipText" type="java.lang.String" value="Show addresses as hex numbers"/>
                             <Property name="borderPainted" type="boolean" value="false"/>
-                            <Property name="opaque" type="boolean" value="false"/>
                           </Properties>
                           <Events>
                             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="toggleButtonHexActionPerformed"/>
@@ -222,7 +220,6 @@
                             <Property name="text" type="java.lang.String" value="highlight"/>
                             <Property name="toolTipText" type="java.lang.String" value="Highlight cells that registers are pointing to"/>
                             <Property name="borderPainted" type="boolean" value="false"/>
-                            <Property name="opaque" type="boolean" value="false"/>
                           </Properties>
                           <Events>
                             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="toggleButtonHighlightActionPerformed"/>
@@ -239,7 +236,6 @@
                           <Properties>
                             <Property name="text" type="java.lang.String" value="8 Bit"/>
                             <Property name="borderPainted" type="boolean" value="false"/>
-                            <Property name="opaque" type="boolean" value="false"/>
                           </Properties>
                           <Events>
                             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="toggleButton8BitActionPerformed"/>
@@ -249,7 +245,6 @@
                           <Properties>
                             <Property name="text" type="java.lang.String" value="16Bit"/>
                             <Property name="borderPainted" type="boolean" value="false"/>
-                            <Property name="opaque" type="boolean" value="false"/>
                           </Properties>
                           <Events>
                             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="toggleButton16BitActionPerformed"/>
@@ -260,7 +255,6 @@
                             <Property name="selected" type="boolean" value="true"/>
                             <Property name="text" type="java.lang.String" value="32Bit"/>
                             <Property name="borderPainted" type="boolean" value="false"/>
-                            <Property name="opaque" type="boolean" value="false"/>
                           </Properties>
                           <Events>
                             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="toggleButton32BitActionPerformed"/>
@@ -475,9 +469,6 @@
                             <EmptyBorder bottom="0" left="0" right="0" top="0"/>
                           </Border>
                         </Property>
-                        <Property name="margin" type="java.awt.Insets" editor="org.netbeans.beaninfo.editors.InsetsEditor">
-                          <Insets value="[0, 0, 0, 0]"/>
-                        </Property>
                       </Properties>
                       <Events>
                         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jCheckCarryActionPerformed"/>
@@ -490,9 +481,6 @@
                           <Border info="org.netbeans.modules.form.compat2.border.EmptyBorderInfo">
                             <EmptyBorder bottom="0" left="0" right="0" top="0"/>
                           </Border>
-                        </Property>
-                        <Property name="margin" type="java.awt.Insets" editor="org.netbeans.beaninfo.editors.InsetsEditor">
-                          <Insets value="[0, 0, 0, 0]"/>
                         </Property>
                       </Properties>
                       <Events>
@@ -507,9 +495,6 @@
                             <EmptyBorder bottom="0" left="0" right="0" top="0"/>
                           </Border>
                         </Property>
-                        <Property name="margin" type="java.awt.Insets" editor="org.netbeans.beaninfo.editors.InsetsEditor">
-                          <Insets value="[0, 0, 0, 0]"/>
-                        </Property>
                       </Properties>
                       <Events>
                         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jCheckSignActionPerformed"/>
@@ -522,9 +507,6 @@
                           <Border info="org.netbeans.modules.form.compat2.border.EmptyBorderInfo">
                             <EmptyBorder bottom="0" left="0" right="0" top="0"/>
                           </Border>
-                        </Property>
-                        <Property name="margin" type="java.awt.Insets" editor="org.netbeans.beaninfo.editors.InsetsEditor">
-                          <Insets value="[0, 0, 0, 0]"/>
                         </Property>
                       </Properties>
                       <Events>
@@ -539,9 +521,6 @@
                             <EmptyBorder bottom="0" left="0" right="0" top="0"/>
                           </Border>
                         </Property>
-                        <Property name="margin" type="java.awt.Insets" editor="org.netbeans.beaninfo.editors.InsetsEditor">
-                          <Insets value="[0, 0, 0, 0]"/>
-                        </Property>
                       </Properties>
                       <Events>
                         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jCheckParityActionPerformed"/>
@@ -554,9 +533,6 @@
                           <Border info="org.netbeans.modules.form.compat2.border.EmptyBorderInfo">
                             <EmptyBorder bottom="0" left="0" right="0" top="0"/>
                           </Border>
-                        </Property>
-                        <Property name="margin" type="java.awt.Insets" editor="org.netbeans.beaninfo.editors.InsetsEditor">
-                          <Insets value="[0, 0, 0, 0]"/>
                         </Property>
                       </Properties>
                       <Events>
@@ -571,9 +547,6 @@
                             <EmptyBorder bottom="0" left="0" right="0" top="0"/>
                           </Border>
                         </Property>
-                        <Property name="margin" type="java.awt.Insets" editor="org.netbeans.beaninfo.editors.InsetsEditor">
-                          <Insets value="[0, 0, 0, 0]"/>
-                        </Property>
                       </Properties>
                       <Events>
                         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jCheckTrapActionPerformed"/>
@@ -586,9 +559,6 @@
                           <Border info="org.netbeans.modules.form.compat2.border.EmptyBorderInfo">
                             <EmptyBorder bottom="0" left="0" right="0" top="0"/>
                           </Border>
-                        </Property>
-                        <Property name="margin" type="java.awt.Insets" editor="org.netbeans.beaninfo.editors.InsetsEditor">
-                          <Insets value="[0, 0, 0, 0]"/>
                         </Property>
                       </Properties>
                       <Events>
@@ -632,7 +602,6 @@
                             <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                               <Dimension value="[45, 27]"/>
                             </Property>
-                            <Property name="opaque" type="boolean" value="false"/>
                             <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                               <Dimension value="[45, 27]"/>
                             </Property>
@@ -656,7 +625,6 @@
                             <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                               <Dimension value="[45, 27]"/>
                             </Property>
-                            <Property name="opaque" type="boolean" value="false"/>
                             <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                               <Dimension value="[45, 27]"/>
                             </Property>
@@ -679,7 +647,6 @@
                             <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                               <Dimension value="[45, 27]"/>
                             </Property>
-                            <Property name="opaque" type="boolean" value="false"/>
                             <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                               <Dimension value="[45, 27]"/>
                             </Property>
@@ -702,7 +669,6 @@
                             <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                               <Dimension value="[45, 27]"/>
                             </Property>
-                            <Property name="opaque" type="boolean" value="false"/>
                             <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                               <Dimension value="[45, 27]"/>
                             </Property>

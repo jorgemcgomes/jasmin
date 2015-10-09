@@ -506,10 +506,15 @@ public final class JasDocument extends javax.swing.JPanel implements Runnable {
                 skipbreakpoint = false;
             }
             if ((lineNumber < numberOfLines)) {
-
                 data.setInstructionPointer(lineNumber + 1);
                 try {
                     executeLineNumber(lineNumber, true);
+                    int delay = frame.getDelay();
+                    try {
+                        Thread.sleep(delay);
+                    } catch(Exception ex) {
+                        // nothing bad happens -- do nothing
+                    }
                 } catch (Exception ex) {
                     updateExecutionMark();
                     scrollToExecutionMark();

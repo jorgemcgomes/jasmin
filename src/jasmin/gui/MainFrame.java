@@ -131,6 +131,10 @@ public class MainFrame extends javax.swing.JFrame {
 		DocTab.setSelectedComponent(newbrowser);
 		helpDocument = newbrowser;
 	}
+        
+        public int getDelay() {
+            return delaySlider.getValue();
+        }
 	
 	/**
 	 * Update all Button states.
@@ -160,6 +164,9 @@ public class MainFrame extends javax.swing.JFrame {
 			}
                         if(!quickSave.isEnabled()) {
                             quickSave.setEnabled(true);
+                        }
+                        if(!delaySlider.isEnabled()) {
+                            delaySlider.setEnabled(true);
                         }
 			if (!jMenuItem10.isEnabled()) {
 				jMenuItem10.setEnabled(true);
@@ -229,6 +236,7 @@ public class MainFrame extends javax.swing.JFrame {
 			jMenuItem6.setEnabled(false);
 			save.setEnabled(false);
                         quickSave.setEnabled(false);
+                        delaySlider.setEnabled(false);
 			jMenuItem10.setEnabled(false);
 			jMenu2.setEnabled(false);
 			jMenuItem2.setEnabled(false);
@@ -244,6 +252,8 @@ public class MainFrame extends javax.swing.JFrame {
 			jMenuItem13.setEnabled(false);
 			jMenuItem14.setEnabled(false);
 			jMenuItem15.setEnabled(false);
+                        delaySlider.setEnabled(true);
+                        
 			
 			jButton4.setEnabled(true);
 			
@@ -317,6 +327,10 @@ public class MainFrame extends javax.swing.JFrame {
         jPanel8 = new javax.swing.JPanel();
         jButton16 = new javax.swing.JButton();
         jButton17 = new javax.swing.JButton();
+        jSeparator7 = new javax.swing.JToolBar.Separator();
+        jLabel1 = new javax.swing.JLabel();
+        delaySlider = new javax.swing.JSlider();
+        delayText = new javax.swing.JTextField();
         DocTab = new javax.swing.JTabbedPane();
         jPanel1 = new javax.swing.JPanel();
         ErrorLabel = new javax.swing.JLabel();
@@ -595,6 +609,26 @@ public class MainFrame extends javax.swing.JFrame {
             }
         });
         jToolBar1.add(jButton17);
+        jToolBar1.add(jSeparator7);
+
+        jLabel1.setText("Operation delay:");
+        jToolBar1.add(jLabel1);
+
+        delaySlider.setMaximum(250);
+        delaySlider.setValue(0);
+        delaySlider.setMaximumSize(new java.awt.Dimension(150, 27));
+        delaySlider.setPreferredSize(new java.awt.Dimension(150, 27));
+        delaySlider.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                delaySliderStateChanged(evt);
+            }
+        });
+        jToolBar1.add(delaySlider);
+
+        delayText.setEditable(false);
+        delayText.setText("0 ms");
+        delayText.setMaximumSize(new java.awt.Dimension(70, 30));
+        jToolBar1.add(delayText);
 
         jPanel2.add(jToolBar1, java.awt.BorderLayout.NORTH);
 
@@ -824,6 +858,10 @@ public class MainFrame extends javax.swing.JFrame {
     private void quickSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_quickSaveActionPerformed
         document.quickSave();
     }//GEN-LAST:event_quickSaveActionPerformed
+
+    private void delaySliderStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_delaySliderStateChanged
+        delayText.setText(delaySlider.getValue() + " ms");
+    }//GEN-LAST:event_delaySliderStateChanged
 	
 	/**
 	 * @param evt
@@ -1292,6 +1330,8 @@ public class MainFrame extends javax.swing.JFrame {
     private javax.swing.JPopupMenu CloseMenu;
     private javax.swing.JTabbedPane DocTab;
     private javax.swing.JLabel ErrorLabel;
+    private javax.swing.JSlider delaySlider;
+    private javax.swing.JTextField delayText;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton10;
     private javax.swing.JButton jButton11;
@@ -1308,6 +1348,7 @@ public class MainFrame extends javax.swing.JFrame {
     private javax.swing.JButton jButton7;
     private javax.swing.JButton jButton8;
     private javax.swing.JButton jButton9;
+    private javax.swing.JLabel jLabel1;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenu jMenu2;
     private javax.swing.JMenu jMenu3;
@@ -1344,6 +1385,7 @@ public class MainFrame extends javax.swing.JFrame {
     private javax.swing.JSeparator jSeparator4;
     private javax.swing.JSeparator jSeparator5;
     private javax.swing.JSeparator jSeparator6;
+    private javax.swing.JToolBar.Separator jSeparator7;
     private javax.swing.JToolBar jToolBar1;
     private javax.swing.JButton quickSave;
     private javax.swing.JButton save;

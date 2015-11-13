@@ -17,6 +17,10 @@ public class CalculatedAddress {
 	private static String registersMatchingString = createMatchingString(DataSpace.getRegisterList());
 	public static Pattern pRegisters = Pattern.compile(registersMatchingString);
 	
+        // address + constant
+        public static Pattern pAddressPlusConstant = Pattern.compile("[a-zA-Z0-9]+\\+\\d+");
+        // address - constant
+        public static Pattern pAddressMinusConstant = Pattern.compile("[a-zA-Z0-9]+\\-\\d+");
 	// base + displacement
 	public static Pattern pBasePlusDisplacement = Pattern.compile(registersMatchingString + "\\+\\d+");
 	// base - displacement
@@ -158,6 +162,7 @@ public class CalculatedAddress {
 		}
 		// strip []'s
 		s = s.substring(1, s.length() - 1);
+                
 		base = index = null;
 		scale = displacement = 0;
 		// displacement
@@ -165,6 +170,7 @@ public class CalculatedAddress {
 			displacement = Integer.valueOf(s);
 			return null;
 		}
+                
 		// base
 		if (pRegisters.matcher(s).matches()) {
 			base = dsp.getRegisterArgument(s);
@@ -181,6 +187,19 @@ public class CalculatedAddress {
 			displacement = -Integer.valueOf(s.substring(s.indexOf("-") + 1));
 			return null;
 		}
+                // displacement + constant
+                if(pAddressPlusConstant.matcher(s).matches()) {
+                    int left = Integer.parseInt(s.substring(0, s.indexOf("+")));
+                    int right = Integer.parseInt(s.substring(s.indexOf("+")+1));
+                    displacement = left + right;
+                    return null;
+                }
+                if(pAddressMinusConstant.matcher(s).matches()) {
+                    int left = Integer.parseInt(s.substring(0, s.indexOf("+")));
+                    int right = Integer.parseInt(s.substring(s.indexOf("+")+1));
+                    displacement = left - right;
+                    return null;
+                }                
 		// (index*scale)
 		if (pIndexScale.matcher(s).matches()) {
 			index = dsp.getRegisterArgument(s.substring(0, s.indexOf("*")));

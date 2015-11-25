@@ -51,7 +51,7 @@
     <Component class="javax.swing.JCheckBox" name="autoSave">
       <Properties>
         <Property name="selected" type="boolean" value="true"/>
-        <Property name="text" type="java.lang.String" value="Auto save to Jasmin folder in home directory"/>
+        <Property name="text" type="java.lang.String" value="Auto saves"/>
       </Properties>
       <Events>
         <EventHandler event="stateChanged" listener="javax.swing.event.ChangeListener" parameters="javax.swing.event.ChangeEvent" handler="autoSaveStateChanged"/>

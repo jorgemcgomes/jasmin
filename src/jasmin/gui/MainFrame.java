@@ -1,7 +1,6 @@
 /*
  * mainframe.java Created on 16. März 2006, 17:23
  */
-
 package jasmin.gui;
 
 import jasmin.core.HelpLoader;
@@ -19,283 +18,298 @@ import javax.swing.undo.*;
  * @author Kai Orend
  */
 public class MainFrame extends javax.swing.JFrame {
-	
-	private static final long serialVersionUID = 1L;
-	private JasDocument document = null;
-	private HelpBrowser helpDocument = null;
-	public JFileChooser fileChooser = new JFileChooser();
-	public HelpLoader helpLoader = null;
-	private Properties properties;
-	
-	/** Creates new form mainframe */
-	public MainFrame() {
-		File propfile = new File(System.getProperty("user.home") + File.separator + ".jasmin");
-		try {
-			properties = new Properties();
-			
-			if (!propfile.exists()) {
-				propfile.createNewFile();
-				putProperty("font", "Sans Serif");
-				putProperty("font.size", "12");
-				putProperty("memory", "4096");
-				putProperty("language", "en");
-				properties.store(new FileOutputStream(propfile), "Jasmin configuration file");
-			} else {
-				properties.load(new FileInputStream(propfile));
-			}
-		} catch (Exception ex) {
-			JOptionPane.showMessageDialog(this, "Could not open:" + propfile.toString() + "\n"
-				+ ex.toString());
-			System.exit(1);
-		}
-		
-		initComponents();
-		helpLoader = new HelpLoader(getProperty("language"));
-		
-		checkButtonStates();
-		addHelp(getClass().getResource("/jasmin/gui/resources/Welcome.htm"), "Welcome");
-		this.setExtendedState(this.getExtendedState() | Frame.MAXIMIZED_BOTH);
-		
-		String lastpath = getProperty("lastpath");
-		if (lastpath != null) {
-			fileChooser.setSelectedFile(new File(lastpath));
-		}
-		
-		jMenuItemUndo.setAccelerator(KeyStroke.getKeyStroke('Z', Toolkit.getDefaultToolkit()
-			.getMenuShortcutKeyMask()));
-		jMenuItemRedo.setAccelerator(KeyStroke.getKeyStroke('R', Toolkit.getDefaultToolkit()
-			.getMenuShortcutKeyMask()));
-		
-		jMenuItem5.setAccelerator(KeyStroke.getKeyStroke('N', Toolkit.getDefaultToolkit()
-			.getMenuShortcutKeyMask()));
-		jMenuItem3.setAccelerator(KeyStroke.getKeyStroke('O', Toolkit.getDefaultToolkit()
-			.getMenuShortcutKeyMask()));
-		jMenuItem4.setAccelerator(KeyStroke.getKeyStroke('S', Toolkit.getDefaultToolkit()
-			.getMenuShortcutKeyMask()));
-		
-		jMenuItem13.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F5, 0));
-		jMenuItem15.setAccelerator(KeyStroke.getKeyStroke('P', Toolkit.getDefaultToolkit()
-			.getMenuShortcutKeyMask()));
-		
-		jMenuItem16.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F7, 0));
-		
-		jMenuItem14.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F9, 0));
-	}
-	
-	public void changeLnF(String LnF) {
-		
-		try {
-			
-			UIManager.setLookAndFeel(LnF);
-			
-			SwingUtilities.updateComponentTreeUI(this);
-			
-		} catch (Exception e) {
-			JOptionPane.showMessageDialog(null, LnF, e.toString(), JOptionPane.ERROR_MESSAGE);
-		}
-	}
-	
-	/**
-	 * @param key
-	 */
-	public String getProperty(String key) {
-		String result = properties.getProperty(key);
-		return result;
-	}
-	
-	public int getProperty(String key, int oldvalue) {
-		String result = properties.getProperty(key);
-		if (result == null) {
-			putProperty(key, oldvalue);
-			return oldvalue;
-		}
-		return Integer.parseInt(result);
-	}
-	
-	public void putProperty(String key, String value) {
-		properties.setProperty(key, value);
-	}
-	
-	public void putProperty(String key, int value) {
-		properties.setProperty(key, "" + value);
-	}
-	
-	/**
-	 * @param url
-	 * @param title
-	 */
-	public void addHelp(URL url, String title) {
-		HelpBrowser newbrowser = new HelpBrowser(this);
-		newbrowser.openUrl(url);
-		DocTab.add(title, newbrowser);
-		DocTab.setSelectedComponent(newbrowser);
-		helpDocument = newbrowser;
-	}
-        
-        public int getDelay() {
-            return delaySlider.getValue();
+
+    private static final long serialVersionUID = 1L;
+    private JasDocument document = null;
+    private HelpBrowser helpDocument = null;
+    public JFileChooser fileChooser = new JFileChooser();
+    public HelpLoader helpLoader = null;
+    private Properties properties;
+
+    /**
+     * Creates new form mainframe
+     */
+    public MainFrame() {
+        File propfile = new File(System.getProperty("user.home") + File.separator + ".jasmin");
+        try {
+            properties = new Properties();
+
+            if (!propfile.exists()) {
+                propfile.createNewFile();
+                putProperty("font", "Sans Serif");
+                putProperty("font.size", "12");
+                putProperty("memory", "4096");
+                putProperty("language", "en");
+                properties.store(new FileOutputStream(propfile), "Jasmin configuration file");
+            } else {
+                properties.load(new FileInputStream(propfile));
+            }
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(this, "Could not open:" + propfile.toString() + "\n"
+                    + ex.toString());
+            System.exit(1);
         }
-	
-	/**
-	 * Update all Button states.
-	 */
-	public synchronized void checkButtonStates() {
-		if ((document != null) && !document.running) {
-			jButton16.setEnabled(true);
-			jButton17.setEnabled(document.hasSnapshot());
-			
-			jMenu2.setEnabled(true);
-			jButton6.setEnabled(false);
-			jButton14.setEnabled(false);
-			
-			jButton15.setEnabled(true);
-			
-			if (!jButton12.isEnabled()) {
-				jButton12.setEnabled(true);
-			}
-			if (!jMenuItem4.isEnabled()) {
-				jMenuItem4.setEnabled(true);
-			}
-			if (!jMenuItem6.isEnabled()) {
-				jMenuItem6.setEnabled(true);
-			}
-			if (!save.isEnabled()) {
-				save.setEnabled(true);
-			}
-                        if(!quickSave.isEnabled()) {
-                            quickSave.setEnabled(true);
-                        }
-                        if(!delaySlider.isEnabled()) {
-                            delaySlider.setEnabled(true);
-                        }
-			if (!jMenuItem10.isEnabled()) {
-				jMenuItem10.setEnabled(true);
-			}
-			if (!jMenu3.isEnabled()) {
-				jMenu3.setEnabled(true);
-			}
-			if (!jMenuItem2.isEnabled()) {
-				jMenuItem2.setEnabled(true);
-			}
-			if (!jButton13.isEnabled()) {
-				jButton13.setEnabled(true);
-			}
-			if (!jButton4.isEnabled()) {
-				jButton4.setEnabled(true);
-			}
-			if (!jButton5.isEnabled()) {
-				jButton5.setEnabled(true);
-			}
-			if (!jButton7.isEnabled()) {
-				jButton7.setEnabled(true);
-			}
-			if (!document.getEditor().isEnabled()) {
-				document.getEditor().setEnabled(true);
-			}
-			
-			if (jButton8.isEnabled() != (document.undoManager.canUndo())) {
-				jButton8.setEnabled((document.undoManager.canUndo()));
-				jMenuItemUndo.setEnabled((document.undoManager.canUndo()));
-			}
-			if (jButton9.isEnabled() != (document.undoManager.canRedo())) {
-				jButton9.setEnabled((document.undoManager.canRedo()));
-				jMenuItemRedo.setEnabled((document.undoManager.canRedo()));
-			}
-			
-			boolean hasSelection = ((document.getEditor().getSelectionEnd()
-				- document.getEditor().getSelectionStart()) > 0);
-			if (jButton11.isEnabled() != hasSelection) {
-				jButton11.setEnabled(hasSelection);
-				jButton10.setEnabled(hasSelection);
-				jMenuItem8.setEnabled(hasSelection);
-				jMenuItem9.setEnabled(hasSelection);
-			}
-			
-			jMenuItem15.setEnabled(document.running);
-			jMenuItem13.setEnabled(!document.running);
-			
-			jButton4.setIcon(new javax.swing.ImageIcon(getClass().getResource(
-				"/jasmin/gui/resources/icons/play_green.png")));
-			
-		} else {
-			jButton16.setEnabled(false);
-			jButton17.setEnabled(false);
-			
-			jButton8.setEnabled(false);
-			jMenuItemUndo.setEnabled(false);
-			jButton9.setEnabled(false);
-			jMenuItemRedo.setEnabled(false);
-			jButton11.setEnabled(false);
-			jButton10.setEnabled(false);
-			jMenuItem8.setEnabled(false);
-			jMenuItem9.setEnabled(false);
-			jMenuItem15.setEnabled(false);
-			
-			jButton12.setEnabled(false);
-			jMenuItem4.setEnabled(false);
-			jMenuItem6.setEnabled(false);
-			save.setEnabled(false);
-                        quickSave.setEnabled(false);
-                        delaySlider.setEnabled(false);
-			jMenuItem10.setEnabled(false);
-			jMenu2.setEnabled(false);
-			jMenuItem2.setEnabled(false);
-			jButton13.setEnabled(false);
-			jButton4.setEnabled(false);
-			jButton5.setEnabled(false);
-			jButton7.setEnabled(false);
-			jButton15.setEnabled(false);
-			jMenu3.setEnabled(false);
-		}
-		if ((document != null) && document.running) {
-			jButton15.setEnabled(true);
-			jMenuItem13.setEnabled(false);
-			jMenuItem14.setEnabled(false);
-			jMenuItem15.setEnabled(false);
-                        delaySlider.setEnabled(true);
-                        
-			
-			jButton4.setEnabled(true);
-			
-			document.getEditor().setEnabled(false);
-			jButton4.setIcon(new javax.swing.ImageIcon(getClass().getResource(
-				"/jasmin/gui/resources/icons/play_pause.png")));
-		}
-		if (helpDocument != null) {
-			jButton6.setEnabled(helpDocument.canBack());
-			jButton14.setEnabled(helpDocument.canForward());
-		}
-	}
-	
-	public void open() {
-		JasDocument doc = new JasDocument(ErrorLabel, this);
-		
-		if (doc.open()) {
-			addDocument(doc);
-		}
-		
-	}
-	
-	private void save() {
-		document.save();
-		DocTab.setSelectedComponent(document);
-	}
-	
-	/**
-	 * Updates the title of the tab of an JasDocument.
-	 */
-	public void updateTitle(JasDocument doc) {
-		int index = DocTab.indexOfComponent(doc);
-		if (index != -1) {
-			DocTab.setTitleAt(index, doc.getTitle());
-		}
-	}
-	
-	/**
-	 * This method is called from within the constructor to initialize the form. WARNING: Do NOT modify this
-	 * code. The
-	 * content of this method is always regenerated by the Form Editor.
-	 */
+
+        initComponents();
+        helpLoader = new HelpLoader(getProperty("language"));
+
+        checkButtonStates();
+        addHelp(getClass().getResource("/jasmin/gui/resources/Welcome.htm"), "Welcome");
+        this.setExtendedState(this.getExtendedState() | Frame.MAXIMIZED_BOTH);
+
+        String lastpath = getProperty("lastpath.asm");
+        if (lastpath != null) {
+            fileChooser.setSelectedFile(new File(lastpath));
+        }
+
+        // restore last save if execution did not terminate well
+        int closedWell = this.getProperty("closed_well", 1);
+        if (closedWell == 0) {
+            File temp = new File(System.getProperty("user.home") + File.separator + ".jasmintemp.asm");
+            if (temp.exists()) {
+                this.newDocument();
+                document.loadFile(temp);
+            }
+
+        }
+
+        this.putProperty("closed_well", 0);
+        this.saveProperties();
+
+        jMenuItemUndo.setAccelerator(KeyStroke.getKeyStroke('Z', Toolkit.getDefaultToolkit()
+                .getMenuShortcutKeyMask()));
+        jMenuItemRedo.setAccelerator(KeyStroke.getKeyStroke('R', Toolkit.getDefaultToolkit()
+                .getMenuShortcutKeyMask()));
+
+        jMenuItem5.setAccelerator(KeyStroke.getKeyStroke('N', Toolkit.getDefaultToolkit()
+                .getMenuShortcutKeyMask()));
+        jMenuItem3.setAccelerator(KeyStroke.getKeyStroke('O', Toolkit.getDefaultToolkit()
+                .getMenuShortcutKeyMask()));
+        jMenuItem4.setAccelerator(KeyStroke.getKeyStroke('S', Toolkit.getDefaultToolkit()
+                .getMenuShortcutKeyMask()));
+
+        jMenuItem13.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F5, 0));
+        jMenuItem15.setAccelerator(KeyStroke.getKeyStroke('P', Toolkit.getDefaultToolkit()
+                .getMenuShortcutKeyMask()));
+
+        jMenuItem16.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F7, 0));
+
+        jMenuItem14.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F9, 0));
+    }
+
+    public void changeLnF(String LnF) {
+
+        try {
+
+            UIManager.setLookAndFeel(LnF);
+
+            SwingUtilities.updateComponentTreeUI(this);
+
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, LnF, e.toString(), JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    /**
+     * @param key
+     */
+    public String getProperty(String key) {
+        String result = properties.getProperty(key);
+        return result;
+    }
+
+    public int getProperty(String key, int oldvalue) {
+        String result = properties.getProperty(key);
+        if (result == null) {
+            putProperty(key, oldvalue);
+            return oldvalue;
+        }
+        return Integer.parseInt(result);
+    }
+
+    public void putProperty(String key, String value) {
+        properties.setProperty(key, value);
+    }
+
+    public void putProperty(String key, int value) {
+        properties.setProperty(key, "" + value);
+    }
+
+    /**
+     * @param url
+     * @param title
+     */
+    public void addHelp(URL url, String title) {
+        HelpBrowser newbrowser = new HelpBrowser(this);
+        newbrowser.openUrl(url);
+        DocTab.add(title, newbrowser);
+        DocTab.setSelectedComponent(newbrowser);
+        helpDocument = newbrowser;
+    }
+
+    public int getDelay() {
+        return delaySlider.getValue();
+    }
+
+    /**
+     * Update all Button states.
+     */
+    public synchronized void checkButtonStates() {
+        if ((document != null) && !document.running) {
+            jButton16.setEnabled(true);
+            jButton17.setEnabled(document.hasSnapshot());
+
+            jMenu2.setEnabled(true);
+            jButton6.setEnabled(false);
+            jButton14.setEnabled(false);
+
+            jButton15.setEnabled(true);
+
+            if (!jButton12.isEnabled()) {
+                jButton12.setEnabled(true);
+            }
+            if (!jMenuItem4.isEnabled()) {
+                jMenuItem4.setEnabled(true);
+            }
+            if (!jMenuItem6.isEnabled()) {
+                jMenuItem6.setEnabled(true);
+            }
+            if (!save.isEnabled()) {
+                save.setEnabled(true);
+            }
+            if (!quickSave.isEnabled()) {
+                quickSave.setEnabled(true);
+            }
+            if (!delaySlider.isEnabled()) {
+                delaySlider.setEnabled(true);
+            }
+            if (!jMenuItem10.isEnabled()) {
+                jMenuItem10.setEnabled(true);
+            }
+            if (!jMenu3.isEnabled()) {
+                jMenu3.setEnabled(true);
+            }
+            if (!jMenuItem2.isEnabled()) {
+                jMenuItem2.setEnabled(true);
+            }
+            if (!jButton13.isEnabled()) {
+                jButton13.setEnabled(true);
+            }
+            if (!jButton4.isEnabled()) {
+                jButton4.setEnabled(true);
+            }
+            if (!jButton5.isEnabled()) {
+                jButton5.setEnabled(true);
+            }
+            if (!jButton7.isEnabled()) {
+                jButton7.setEnabled(true);
+            }
+            if (!document.getEditor().isEnabled()) {
+                document.getEditor().setEnabled(true);
+            }
+
+            if (jButton8.isEnabled() != (document.undoManager.canUndo())) {
+                jButton8.setEnabled((document.undoManager.canUndo()));
+                jMenuItemUndo.setEnabled((document.undoManager.canUndo()));
+            }
+            if (jButton9.isEnabled() != (document.undoManager.canRedo())) {
+                jButton9.setEnabled((document.undoManager.canRedo()));
+                jMenuItemRedo.setEnabled((document.undoManager.canRedo()));
+            }
+
+            boolean hasSelection = ((document.getEditor().getSelectionEnd()
+                    - document.getEditor().getSelectionStart()) > 0);
+            if (jButton11.isEnabled() != hasSelection) {
+                jButton11.setEnabled(hasSelection);
+                jButton10.setEnabled(hasSelection);
+                jMenuItem8.setEnabled(hasSelection);
+                jMenuItem9.setEnabled(hasSelection);
+            }
+
+            jMenuItem15.setEnabled(document.running);
+            jMenuItem13.setEnabled(!document.running);
+
+            jButton4.setIcon(new javax.swing.ImageIcon(getClass().getResource(
+                    "/jasmin/gui/resources/icons/play_green.png")));
+
+        } else {
+            jButton16.setEnabled(false);
+            jButton17.setEnabled(false);
+
+            jButton8.setEnabled(false);
+            jMenuItemUndo.setEnabled(false);
+            jButton9.setEnabled(false);
+            jMenuItemRedo.setEnabled(false);
+            jButton11.setEnabled(false);
+            jButton10.setEnabled(false);
+            jMenuItem8.setEnabled(false);
+            jMenuItem9.setEnabled(false);
+            jMenuItem15.setEnabled(false);
+
+            jButton12.setEnabled(false);
+            jMenuItem4.setEnabled(false);
+            jMenuItem6.setEnabled(false);
+            save.setEnabled(false);
+            quickSave.setEnabled(false);
+            delaySlider.setEnabled(false);
+            jMenuItem10.setEnabled(false);
+            jMenu2.setEnabled(false);
+            jMenuItem2.setEnabled(false);
+            jButton13.setEnabled(false);
+            jButton4.setEnabled(false);
+            jButton5.setEnabled(false);
+            jButton7.setEnabled(false);
+            jButton15.setEnabled(false);
+            jMenu3.setEnabled(false);
+        }
+        if ((document != null) && document.running) {
+            jButton15.setEnabled(true);
+            jMenuItem13.setEnabled(false);
+            jMenuItem14.setEnabled(false);
+            jMenuItem15.setEnabled(false);
+            delaySlider.setEnabled(true);
+
+            jButton4.setEnabled(true);
+
+            document.getEditor().setEnabled(false);
+            jButton4.setIcon(new javax.swing.ImageIcon(getClass().getResource(
+                    "/jasmin/gui/resources/icons/play_pause.png")));
+        }
+        if (helpDocument != null) {
+            jButton6.setEnabled(helpDocument.canBack());
+            jButton14.setEnabled(helpDocument.canForward());
+        }
+    }
+
+    public void open() {
+        JasDocument doc = new JasDocument(ErrorLabel, this);
+
+        if (doc.open()) {
+            addDocument(doc);
+        }
+
+    }
+
+    private void save() {
+        document.save();
+        DocTab.setSelectedComponent(document);
+    }
+
+    /**
+     * Updates the title of the tab of an JasDocument.
+     */
+    public void updateTitle(JasDocument doc) {
+        int index = DocTab.indexOfComponent(doc);
+        if (index != -1) {
+            DocTab.setTitleAt(index, doc.getTitle());
+        }
+    }
+
+    /**
+     * This method is called from within the constructor to initialize the form.
+     * WARNING: Do NOT modify this code. The content of this method is always
+     * regenerated by the Form Editor.
+     */
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
@@ -862,470 +876,435 @@ public class MainFrame extends javax.swing.JFrame {
     private void delaySliderStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_delaySliderStateChanged
         delayText.setText(delaySlider.getValue() + " ms");
     }//GEN-LAST:event_delaySliderStateChanged
-	
-	/**
-	 * @param evt
-	 *        the Event that triggered this action
-	 */
-	private void jMenuItemRedoActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_jMenuItemRedoActionPerformed
-		document.undoManager.redo();
-		checkButtonStates();
-	}// GEN-LAST:event_jMenuItemRedoActionPerformed
-	
-	/**
-	 * @param evt
-	 *        the Event that triggered this action
-	 */
-	private void jMenuItemUndoActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_jMenuItemUndoActionPerformed
-		document.undoManager.undo();
-		checkButtonStates();
-	}// GEN-LAST:event_jMenuItemUndoActionPerformed
-	
-	/**
-	 * @param evt
-	 *        the Event that triggered this action
-	 */
-	private void jButton17ActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_jButton17ActionPerformed
-		document.resumeSnapshot();
-		checkButtonStates();
-	}// GEN-LAST:event_jButton17ActionPerformed
-	
-	/**
-	 * @param evt
-	 *        the Event that triggered this action
-	 */
-	private void jButton16ActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_jButton16ActionPerformed
-	
-		document.takeSnapshot();
-		
-		checkButtonStates();
-	}// GEN-LAST:event_jButton16ActionPerformed
-	
-	/**
-	 * @param evt
-	 *        the Event that triggered this action
-	 */
-	private void jMenuItem18ActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_jMenuItem18ActionPerformed
-		addHelp(getClass().getResource("/jasmin/gui/resources/Configuration.htm"), "Configuration");
-	}// GEN-LAST:event_jMenuItem18ActionPerformed
-	
-	/**
-	 * @param evt
-	 *        the Event that triggered this action
-	 */
-	private void jButton15ActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_jButton15ActionPerformed
-		document.data.clear();
-		document.clearAll();
-		document.updateAll();
-		document.clearErrorLine();
-	}// GEN-LAST:event_jButton15ActionPerformed
-	
-	/**
-	 * @param evt
-	 *        the Event that triggered this action
-	 */
-	private void formWindowClosing(java.awt.event.WindowEvent evt) {// GEN-FIRST:event_formWindowClosing
-		try {
-			
-			File propfile = new File(System.getProperty("user.home") + File.separator + ".jasmin");
-			if (!propfile.exists()) {
-				propfile.createNewFile();
-			}
-			properties.store(new FileOutputStream(propfile), "Jasmin configuration file");
-		} catch (Exception ex) {
-			JOptionPane.showMessageDialog(this, ex.toString());
-			System.exit(1);
-		}
-		System.exit(0);
-	}// GEN-LAST:event_formWindowClosing
-	
-	/**
-	 * @param evt
-	 *        the Event that triggered this action
-	 */
-	private void formWindowClosed(java.awt.event.WindowEvent evt) {// GEN-FIRST:event_formWindowClosed
-	
-	}// GEN-LAST:event_formWindowClosed
-	
-	/**
-	 * @param evt
-	 *        the Event that triggered this action
-	 */
-	private void jButton14ActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_jButton14ActionPerformed
-		if (helpDocument != null) {
-			helpDocument.forward();
-		}
-	}// GEN-LAST:event_jButton14ActionPerformed
-	
-	/**
-	 * @param evt
-	 *        the Event that triggered this action
-	 */
-	private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_jButton6ActionPerformed
-		if (helpDocument != null) {
-			helpDocument.back();
-		}
-	}// GEN-LAST:event_jButton6ActionPerformed
-	
-	/**
-	 * @param evt
-	 *        the Event that triggered this action
-	 */
-	private void DocTabComponentRemoved(java.awt.event.ContainerEvent evt) {// GEN-FIRST:event_DocTabComponentRemoved
-		DocTabStateChanged(null);
-	}// GEN-LAST:event_DocTabComponentRemoved
-	
-	/**
-	 * @param evt
-	 *        the Event that triggered this action
-	 */
-	private void jMenuItem17ActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_jMenuItem17ActionPerformed
-		if (document != null) {
-			DocTab.remove(document);
-		} else if (helpDocument != null) {
-			DocTab.remove(helpDocument);
-		}
-		checkButtonStates();
-	}// GEN-LAST:event_jMenuItem17ActionPerformed
-	
-	private void DocTabMouseClicked(java.awt.event.MouseEvent evt) {// GEN-FIRST:event_DocTabMouseClicked
-		if (evt.getButton() == MouseEvent.BUTTON3) {
-			CloseMenu.show(evt.getComponent(), evt.getX(), evt.getY());
-		}
-	}// GEN-LAST:event_DocTabMouseClicked
-	
-	/**
-	 * @param evt
-	 *        the Event that triggered this action
-	 */
-	private void jMenuItem2ActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_jMenuItem2ActionPerformed
-		if (document != null) {
-			DocTab.remove(document);
-		} else if (helpDocument != null) {
-			DocTab.remove(helpDocument);
-		}
-		checkButtonStates();
-	}// GEN-LAST:event_jMenuItem2ActionPerformed
-	
-	/**
-	 * @param evt
-	 *        the Event that triggered this action
-	 */
-	private void jMenu1ActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_jMenu1ActionPerformed
-	}// GEN-LAST:event_jMenu1ActionPerformed
-	
-	/**
-	 * @param evt
-	 *        the Event that triggered this action
-	 */
-	private void jMenuItem7ActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_jMenuItem7ActionPerformed
-		document.openData();
-		
-	}// GEN-LAST:event_jMenuItem7ActionPerformed
-	
-	/**
-	 * @param evt
-	 *        the Event that triggered this action
-	 */
-	private void jMenuItem6ActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_jMenuItem6ActionPerformed
-		document.saveData();
-	}// GEN-LAST:event_jMenuItem6ActionPerformed
-	
-	/**
-	 * @param evt
-	 *        the Event that triggered this action
-	 */
-	private void jMenuItem4ActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_jMenuItem4ActionPerformed
-		save();
-	}// GEN-LAST:event_jMenuItem4ActionPerformed
-	
-	/**
-	 * @param evt
-	 *        the Event that triggered this action
-	 */
-	private void jMenuItem3ActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_jMenuItem3ActionPerformed
-		open();
-	}// GEN-LAST:event_jMenuItem3ActionPerformed
-	
-	/**
-	 * @param evt
-	 *        the Event that triggered this action
-	 */
-	private void saveActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_jButton2ActionPerformed
-		save();
-	}// GEN-LAST:event_jButton2ActionPerformed
-	
-	/**
-	 * @param evt
-	 *        the Event that triggered this action
-	 */
-	private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_jButton1ActionPerformed
-		open();
-	}// GEN-LAST:event_jButton1ActionPerformed
-	
-	/**
-	 * @param evt
-	 *        the Event that triggered this action
-	 */
-	private void jMenuItem14ActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_jMenuItem14ActionPerformed
-		document.executeCurrentLine();
-		checkButtonStates();
-	}// GEN-LAST:event_jMenuItem14ActionPerformed
-	
-	/**
-	 * @param evt
-	 *        the Event that triggered this action
-	 */
-	private void jMenuItem16ActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_jMenuItem16ActionPerformed
-		document.step();
-		checkButtonStates();
-	}// GEN-LAST:event_jMenuItem16ActionPerformed
-	
-	/**
-	 * @param evt
-	 *        the Event that triggered this action
-	 */
-	private void jMenuItem15ActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_jMenuItem15ActionPerformed
-		document.pauseProgram();
-		checkButtonStates();
-	}// GEN-LAST:event_jMenuItem15ActionPerformed
-	
-	/**
-	 * @param evt
-	 *        the Event that triggered this action
-	 */
-	private void jMenuItem13ActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_jMenuItem13ActionPerformed
-		document.runProgram();
-		checkButtonStates();
-	}// GEN-LAST:event_jMenuItem13ActionPerformed
-	
-	/**
-	 * @param evt
-	 *        the Event that triggered this action
-	 */
-	private void jMenuItem10ActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_jMenuItem10ActionPerformed
-		document.getEditor().paste();
-		checkButtonStates();
-	}// GEN-LAST:event_jMenuItem10ActionPerformed
-	
-	/**
-	 * @param evt
-	 *        the Event that triggered this action
-	 */
-	private void jMenuItem9ActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_jMenuItem9ActionPerformed
-		document.getEditor().copy();
-	}// GEN-LAST:event_jMenuItem9ActionPerformed
-	
-	/**
-	 * @param evt
-	 *        the Event that triggered this action
-	 */
-	private void jMenuItem8ActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_jMenuItem8ActionPerformed
-		document.getEditor().cut();
-	}// GEN-LAST:event_jMenuItem8ActionPerformed
-	
-	private void jMenuItem5ActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_jMenuItem5ActionPerformed
-		jButton3ActionPerformed(evt);
-	}// GEN-LAST:event_jMenuItem5ActionPerformed
-	
-	/**
-	 * @param evt
-	 *        the Event that triggered this action
-	 */
-	private void jButton13ActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_jButton13ActionPerformed
-		document.pauseProgram();
-		//Thread.yield();
-		document.data.setInstructionPointer(0);
-		document.updateAll();
-		checkButtonStates();
-	}// GEN-LAST:event_jButton13ActionPerformed
-	
-	/**
-	 * @param evt
-	 *        the Event that triggered this action
-	 */
-	private void jButton9ActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_jButton9ActionPerformed
-		document.undoManager.redo();
-		checkButtonStates();
-	}// GEN-LAST:event_jButton9ActionPerformed
-	
-	/**
-	 * @param evt
-	 *        the Event that triggered this action
-	 */
-	private void jButton8ActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_jButton8ActionPerformed
-		document.undoManager.undo();
-		checkButtonStates();
-	}// GEN-LAST:event_jButton8ActionPerformed
-	
-	/**
-	 * @param evt
-	 *        the Event that triggered this action
-	 */
-	private void jButton12ActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_jButton12ActionPerformed
-		document.getEditor().paste();
-		checkButtonStates();
-	}// GEN-LAST:event_jButton12ActionPerformed
-	
-	/**
-	 * @param evt
-	 *        the Event that triggered this action
-	 */
-	private void jButton11ActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_jButton11ActionPerformed
-		document.getEditor().copy();
-		checkButtonStates();
-	}// GEN-LAST:event_jButton11ActionPerformed
-	
-	/**
-	 * @param evt
-	 *        the Event that triggered this action
-	 */
-	private void jButton10ActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_jButton10ActionPerformed
-		document.getEditor().cut();
-		checkButtonStates();
-	}// GEN-LAST:event_jButton10ActionPerformed
-	
-	/**
-	 * @param evt
-	 *        the Event that triggered this action
-	 */
-	private void jButton7ActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_jButton7ActionPerformed
-		document.executeCurrentLine();
-		checkButtonStates();
-	}// GEN-LAST:event_jButton7ActionPerformed
-	
-	/**
-	 * @param evt
-	 *        the Event that triggered this action
-	 */
-	private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_jButton4ActionPerformed
-		if (document.running) {
-			document.pauseProgram();
-		} else {
-			document.runProgram();
-		}
-		checkButtonStates();
-	}// GEN-LAST:event_jButton4ActionPerformed
-	
-	/**
-	 * @param evt
-	 *        the Event that triggered this action
-	 */
-	private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_jButton5ActionPerformed
-		document.step();
-		checkButtonStates();
-	}// GEN-LAST:event_jButton5ActionPerformed
-	
-	/**
-	 * @param evt
-	 *        the Event that triggered this action
-	 */
-	private void DocTabStateChanged(javax.swing.event.ChangeEvent evt) {// GEN-FIRST:event_DocTabStateChanged
-		Object odoc = DocTab.getSelectedComponent();
-		if (odoc != null) {
-			if (odoc instanceof JasDocument) {
-				document = (JasDocument) odoc;
-				this.setTitle("Jasmin - " + document.getTitle());
-				DocTab.setTitleAt(DocTab.indexOfComponent(document), document.getTitle());
-				helpDocument = null;
-			} else if (odoc instanceof HelpBrowser) {
-				helpDocument = (HelpBrowser) odoc;
-				document = null;
-			}
-		} else {
-			document = null;
-			helpDocument = null;
-		}
-		
-		checkButtonStates();
-	}// GEN-LAST:event_DocTabStateChanged
-	
-	public void newDocument() {
-		addDocument(new JasDocument(ErrorLabel, this));
-		helpDocument = null;
-	}
-	
-	/**
-	 * @param evt
-	 *        the Event that triggered this action
-	 */
-	private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_jButton3ActionPerformed
-	
-		newDocument();
-	}// GEN-LAST:event_jButton3ActionPerformed
-	
-	/**
-	 * @param evt
-	 *        the Event that triggered this action
-	 */
-	private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_jMenuItem1ActionPerformed
-	
-		formWindowClosing(null);
-	}// GEN-LAST:event_jMenuItem1ActionPerformed
-	
-	private void addDocument(JasDocument doc) {
-		doc.undoManager = new UndoManager() {
-			
-			private static final long serialVersionUID = 5579743695599380564L;
-			
-			public void undoableEditHappened(UndoableEditEvent e) {
-				
-				UndoableEdit ue = e.getEdit();
-				if (ue instanceof AbstractDocument.DefaultDocumentEvent) {
-					AbstractDocument.DefaultDocumentEvent ae = (AbstractDocument.DefaultDocumentEvent) ue;
-					if (ae.getType() == DocumentEvent.EventType.CHANGE) {
-						super.addEdit(new NoStyleUndo(ae));
-					} else {
-						super.addEdit(e.getEdit());
-					}
-					
-				}
-				checkButtonStates();
-				
-			}
-			
-			public void undo() throws CannotUndoException {
-				try {
-					super.undo();
-					checkButtonStates();
-				} catch (Exception ex) {
-					
-				}
-			}
-			
-			public void redo() throws CannotRedoException {
-				try {
-					super.redo();
-					checkButtonStates();
-				} catch (Exception ex) {
-					
-				}
-			}
-			
-		};
-		
-		doc.getEditor().getDocument().addUndoableEditListener(doc.undoManager);
-		doc.getEditor().addCaretListener(new CaretListener() {
-			
-			/**
-			 * @param e
-			 */
-			public void caretUpdate(CaretEvent e) {
-				checkButtonStates();
-			}
-		});
-		doc.undoManager.setLimit(99999);
-		
-		DocTab.addTab(doc.getTitle(), doc);
-		DocTab.setSelectedIndex(DocTab.getTabCount() - 1);
-		helpDocument = null;
-		document = doc;
-		doc.validate();
-		doc.makeLayout();
-		// Set focus to the editor (when opened via the tool bar button "New").
-		doc.getEditor().requestFocusInWindow();
-	}
-	
+
+    /**
+     * @param evt the Event that triggered this action
+     */
+    private void jMenuItemRedoActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_jMenuItemRedoActionPerformed
+        document.undoManager.redo();
+        checkButtonStates();
+    }// GEN-LAST:event_jMenuItemRedoActionPerformed
+
+    /**
+     * @param evt the Event that triggered this action
+     */
+    private void jMenuItemUndoActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_jMenuItemUndoActionPerformed
+        document.undoManager.undo();
+        checkButtonStates();
+    }// GEN-LAST:event_jMenuItemUndoActionPerformed
+
+    /**
+     * @param evt the Event that triggered this action
+     */
+    private void jButton17ActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_jButton17ActionPerformed
+        document.resumeSnapshot();
+        checkButtonStates();
+    }// GEN-LAST:event_jButton17ActionPerformed
+
+    /**
+     * @param evt the Event that triggered this action
+     */
+    private void jButton16ActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_jButton16ActionPerformed
+
+        document.takeSnapshot();
+
+        checkButtonStates();
+    }// GEN-LAST:event_jButton16ActionPerformed
+
+    /**
+     * @param evt the Event that triggered this action
+     */
+    private void jMenuItem18ActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_jMenuItem18ActionPerformed
+        addHelp(getClass().getResource("/jasmin/gui/resources/Configuration.htm"), "Configuration");
+    }// GEN-LAST:event_jMenuItem18ActionPerformed
+
+    /**
+     * @param evt the Event that triggered this action
+     */
+    private void jButton15ActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_jButton15ActionPerformed
+        document.data.clear();
+        document.clearAll();
+        document.updateAll();
+        document.clearErrorLine();
+    }// GEN-LAST:event_jButton15ActionPerformed
+
+    public void saveProperties() {
+        try {
+            File propfile = new File(System.getProperty("user.home") + File.separator + ".jasmin");
+            if (!propfile.exists()) {
+                propfile.createNewFile();
+            }
+            properties.store(new FileOutputStream(propfile), "Jasmin configuration file");
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(this, ex.toString());
+            System.exit(1);
+        }
+    }
+
+    /**
+     * @param evt the Event that triggered this action
+     */
+    private void formWindowClosing(java.awt.event.WindowEvent evt) {// GEN-FIRST:event_formWindowClosing
+        this.putProperty("closed_well", 1);
+        saveProperties();
+        System.exit(0);
+    }// GEN-LAST:event_formWindowClosing
+
+    /**
+     * @param evt the Event that triggered this action
+     */
+    private void formWindowClosed(java.awt.event.WindowEvent evt) {// GEN-FIRST:event_formWindowClosed
+
+    }// GEN-LAST:event_formWindowClosed
+
+    /**
+     * @param evt the Event that triggered this action
+     */
+    private void jButton14ActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_jButton14ActionPerformed
+        if (helpDocument != null) {
+            helpDocument.forward();
+        }
+    }// GEN-LAST:event_jButton14ActionPerformed
+
+    /**
+     * @param evt the Event that triggered this action
+     */
+    private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_jButton6ActionPerformed
+        if (helpDocument != null) {
+            helpDocument.back();
+        }
+    }// GEN-LAST:event_jButton6ActionPerformed
+
+    /**
+     * @param evt the Event that triggered this action
+     */
+    private void DocTabComponentRemoved(java.awt.event.ContainerEvent evt) {// GEN-FIRST:event_DocTabComponentRemoved
+        DocTabStateChanged(null);
+    }// GEN-LAST:event_DocTabComponentRemoved
+
+    /**
+     * @param evt the Event that triggered this action
+     */
+    private void jMenuItem17ActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_jMenuItem17ActionPerformed
+        if (document != null) {
+            DocTab.remove(document);
+        } else if (helpDocument != null) {
+            DocTab.remove(helpDocument);
+        }
+        checkButtonStates();
+    }// GEN-LAST:event_jMenuItem17ActionPerformed
+
+    private void DocTabMouseClicked(java.awt.event.MouseEvent evt) {// GEN-FIRST:event_DocTabMouseClicked
+        if (evt.getButton() == MouseEvent.BUTTON3) {
+            CloseMenu.show(evt.getComponent(), evt.getX(), evt.getY());
+        }
+    }// GEN-LAST:event_DocTabMouseClicked
+
+    /**
+     * @param evt the Event that triggered this action
+     */
+    private void jMenuItem2ActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_jMenuItem2ActionPerformed
+        if (document != null) {
+            DocTab.remove(document);
+        } else if (helpDocument != null) {
+            DocTab.remove(helpDocument);
+        }
+        checkButtonStates();
+    }// GEN-LAST:event_jMenuItem2ActionPerformed
+
+    /**
+     * @param evt the Event that triggered this action
+     */
+    private void jMenu1ActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_jMenu1ActionPerformed
+    }// GEN-LAST:event_jMenu1ActionPerformed
+
+    /**
+     * @param evt the Event that triggered this action
+     */
+    private void jMenuItem7ActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_jMenuItem7ActionPerformed
+        document.openData();
+
+    }// GEN-LAST:event_jMenuItem7ActionPerformed
+
+    /**
+     * @param evt the Event that triggered this action
+     */
+    private void jMenuItem6ActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_jMenuItem6ActionPerformed
+        document.saveData();
+    }// GEN-LAST:event_jMenuItem6ActionPerformed
+
+    /**
+     * @param evt the Event that triggered this action
+     */
+    private void jMenuItem4ActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_jMenuItem4ActionPerformed
+        save();
+    }// GEN-LAST:event_jMenuItem4ActionPerformed
+
+    /**
+     * @param evt the Event that triggered this action
+     */
+    private void jMenuItem3ActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_jMenuItem3ActionPerformed
+        open();
+    }// GEN-LAST:event_jMenuItem3ActionPerformed
+
+    /**
+     * @param evt the Event that triggered this action
+     */
+    private void saveActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_jButton2ActionPerformed
+        save();
+    }// GEN-LAST:event_jButton2ActionPerformed
+
+    /**
+     * @param evt the Event that triggered this action
+     */
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_jButton1ActionPerformed
+        open();
+    }// GEN-LAST:event_jButton1ActionPerformed
+
+    /**
+     * @param evt the Event that triggered this action
+     */
+    private void jMenuItem14ActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_jMenuItem14ActionPerformed
+        document.executeCurrentLine();
+        checkButtonStates();
+    }// GEN-LAST:event_jMenuItem14ActionPerformed
+
+    /**
+     * @param evt the Event that triggered this action
+     */
+    private void jMenuItem16ActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_jMenuItem16ActionPerformed
+        document.step();
+        checkButtonStates();
+    }// GEN-LAST:event_jMenuItem16ActionPerformed
+
+    /**
+     * @param evt the Event that triggered this action
+     */
+    private void jMenuItem15ActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_jMenuItem15ActionPerformed
+        document.pauseProgram();
+        checkButtonStates();
+    }// GEN-LAST:event_jMenuItem15ActionPerformed
+
+    /**
+     * @param evt the Event that triggered this action
+     */
+    private void jMenuItem13ActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_jMenuItem13ActionPerformed
+        document.runProgram();
+        checkButtonStates();
+    }// GEN-LAST:event_jMenuItem13ActionPerformed
+
+    /**
+     * @param evt the Event that triggered this action
+     */
+    private void jMenuItem10ActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_jMenuItem10ActionPerformed
+        document.getEditor().paste();
+        checkButtonStates();
+    }// GEN-LAST:event_jMenuItem10ActionPerformed
+
+    /**
+     * @param evt the Event that triggered this action
+     */
+    private void jMenuItem9ActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_jMenuItem9ActionPerformed
+        document.getEditor().copy();
+    }// GEN-LAST:event_jMenuItem9ActionPerformed
+
+    /**
+     * @param evt the Event that triggered this action
+     */
+    private void jMenuItem8ActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_jMenuItem8ActionPerformed
+        document.getEditor().cut();
+    }// GEN-LAST:event_jMenuItem8ActionPerformed
+
+    private void jMenuItem5ActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_jMenuItem5ActionPerformed
+        jButton3ActionPerformed(evt);
+    }// GEN-LAST:event_jMenuItem5ActionPerformed
+
+    /**
+     * @param evt the Event that triggered this action
+     */
+    private void jButton13ActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_jButton13ActionPerformed
+        document.pauseProgram();
+        //Thread.yield();
+        document.data.setInstructionPointer(0);
+        document.updateAll();
+        checkButtonStates();
+    }// GEN-LAST:event_jButton13ActionPerformed
+
+    /**
+     * @param evt the Event that triggered this action
+     */
+    private void jButton9ActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_jButton9ActionPerformed
+        document.undoManager.redo();
+        checkButtonStates();
+    }// GEN-LAST:event_jButton9ActionPerformed
+
+    /**
+     * @param evt the Event that triggered this action
+     */
+    private void jButton8ActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_jButton8ActionPerformed
+        document.undoManager.undo();
+        checkButtonStates();
+    }// GEN-LAST:event_jButton8ActionPerformed
+
+    /**
+     * @param evt the Event that triggered this action
+     */
+    private void jButton12ActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_jButton12ActionPerformed
+        document.getEditor().paste();
+        checkButtonStates();
+    }// GEN-LAST:event_jButton12ActionPerformed
+
+    /**
+     * @param evt the Event that triggered this action
+     */
+    private void jButton11ActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_jButton11ActionPerformed
+        document.getEditor().copy();
+        checkButtonStates();
+    }// GEN-LAST:event_jButton11ActionPerformed
+
+    /**
+     * @param evt the Event that triggered this action
+     */
+    private void jButton10ActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_jButton10ActionPerformed
+        document.getEditor().cut();
+        checkButtonStates();
+    }// GEN-LAST:event_jButton10ActionPerformed
+
+    /**
+     * @param evt the Event that triggered this action
+     */
+    private void jButton7ActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_jButton7ActionPerformed
+        document.executeCurrentLine();
+        checkButtonStates();
+    }// GEN-LAST:event_jButton7ActionPerformed
+
+    /**
+     * @param evt the Event that triggered this action
+     */
+    private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_jButton4ActionPerformed
+        if (document.running) {
+            document.pauseProgram();
+        } else {
+            document.runProgram();
+        }
+        checkButtonStates();
+    }// GEN-LAST:event_jButton4ActionPerformed
+
+    /**
+     * @param evt the Event that triggered this action
+     */
+    private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_jButton5ActionPerformed
+        document.step();
+        checkButtonStates();
+    }// GEN-LAST:event_jButton5ActionPerformed
+
+    /**
+     * @param evt the Event that triggered this action
+     */
+    private void DocTabStateChanged(javax.swing.event.ChangeEvent evt) {// GEN-FIRST:event_DocTabStateChanged
+        Object odoc = DocTab.getSelectedComponent();
+        if (odoc != null) {
+            if (odoc instanceof JasDocument) {
+                document = (JasDocument) odoc;
+                this.setTitle("Jasmin - " + document.getTitle());
+                DocTab.setTitleAt(DocTab.indexOfComponent(document), document.getTitle());
+                helpDocument = null;
+            } else if (odoc instanceof HelpBrowser) {
+                helpDocument = (HelpBrowser) odoc;
+                document = null;
+            }
+        } else {
+            document = null;
+            helpDocument = null;
+        }
+
+        checkButtonStates();
+    }// GEN-LAST:event_DocTabStateChanged
+
+    public void newDocument() {
+        addDocument(new JasDocument(ErrorLabel, this));
+        helpDocument = null;
+    }
+
+    /**
+     * @param evt the Event that triggered this action
+     */
+    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_jButton3ActionPerformed
+
+        newDocument();
+    }// GEN-LAST:event_jButton3ActionPerformed
+
+    /**
+     * @param evt the Event that triggered this action
+     */
+    private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_jMenuItem1ActionPerformed
+
+        formWindowClosing(null);
+    }// GEN-LAST:event_jMenuItem1ActionPerformed
+
+    private void addDocument(JasDocument doc) {
+        doc.undoManager = new UndoManager() {
+
+            private static final long serialVersionUID = 5579743695599380564L;
+
+            public void undoableEditHappened(UndoableEditEvent e) {
+
+                UndoableEdit ue = e.getEdit();
+                if (ue instanceof AbstractDocument.DefaultDocumentEvent) {
+                    AbstractDocument.DefaultDocumentEvent ae = (AbstractDocument.DefaultDocumentEvent) ue;
+                    if (ae.getType() == DocumentEvent.EventType.CHANGE) {
+                        super.addEdit(new NoStyleUndo(ae));
+                    } else {
+                        super.addEdit(e.getEdit());
+                    }
+
+                }
+                checkButtonStates();
+
+            }
+
+            public void undo() throws CannotUndoException {
+                try {
+                    super.undo();
+                    checkButtonStates();
+                } catch (Exception ex) {
+
+                }
+            }
+
+            public void redo() throws CannotRedoException {
+                try {
+                    super.redo();
+                    checkButtonStates();
+                } catch (Exception ex) {
+
+                }
+            }
+
+        };
+
+        doc.getEditor().getDocument().addUndoableEditListener(doc.undoManager);
+        doc.getEditor().addCaretListener(new CaretListener() {
+
+            /**
+             * @param e
+             */
+            public void caretUpdate(CaretEvent e) {
+                checkButtonStates();
+            }
+        });
+        doc.undoManager.setLimit(99999);
+
+        DocTab.addTab(doc.getTitle(), doc);
+        DocTab.setSelectedIndex(DocTab.getTabCount() - 1);
+        helpDocument = null;
+        document = doc;
+        doc.validate();
+        doc.makeLayout();
+        // Set focus to the editor (when opened via the tool bar button "New").
+        doc.getEditor().requestFocusInWindow();
+    }
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPopupMenu CloseMenu;
     private javax.swing.JTabbedPane DocTab;
@@ -1390,5 +1369,5 @@ public class MainFrame extends javax.swing.JFrame {
     private javax.swing.JButton quickSave;
     private javax.swing.JButton save;
     // End of variables declaration//GEN-END:variables
-	
+
 }

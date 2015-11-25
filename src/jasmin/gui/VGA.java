@@ -29,8 +29,8 @@ public class VGA extends javax.swing.JPanel implements IGuiModule, IListener {
 	private int pixelwidth;
 	private int pixeldistance;
 	
-	private int screenwidth = 16;
-	private int screenheight = 16;
+	private int screenwidth = 32;
+	private int screenheight = 32;
 	private Address address = new Address(Op.MEM, 4, 0);
 	private int mode = -1;
 	private int colormode;
@@ -407,7 +407,7 @@ public class VGA extends javax.swing.JPanel implements IGuiModule, IListener {
 	 *        the Event that triggered this action
 	 */
 	private void menuItemWidthActionPerformed(java.awt.event.ActionEvent evt) {
-		String newDigits = JOptionPane.showInputDialog("Please enter the width in pixels: (default 16)", "" + screenwidth);
+		String newDigits = JOptionPane.showInputDialog("Please enter the width in pixels: (default 32)", "" + screenwidth);
 		int digits_temp = 0;
 		if (newDigits != null) {
 			try {
@@ -426,7 +426,7 @@ public class VGA extends javax.swing.JPanel implements IGuiModule, IListener {
 	 *        the Event that triggered this action
 	 */
 	private void menuItemHeightActionPerformed(java.awt.event.ActionEvent evt) {
-		String newDigits = JOptionPane.showInputDialog("Please enter the height in pixels: (default 16)", "" + screenheight);
+		String newDigits = JOptionPane.showInputDialog("Please enter the height in pixels: (default 32)", "" + screenheight);
 		int digits_temp = 0;
 		if (newDigits != null) {
 			try {

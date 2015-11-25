@@ -56,6 +56,7 @@ public class Rcl extends JasminCommand {
 			if (p.b == 1) {
 				dataspace.fOverflow = dataspace.fCarry ^ getBit(p.result, bitsize - 1);
 			}
+                        dataspace.fCarry = getBit(buffer, buffersize - p.b - 1);
 		}
 		
 		p.put(0, p.result, null);

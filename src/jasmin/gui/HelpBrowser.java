@@ -301,7 +301,7 @@ public class HelpBrowser extends javax.swing.JPanel {
         });
 
         autoSave.setSelected(true);
-        autoSave.setText("Auto save to Jasmin folder in home directory");
+        autoSave.setText("Auto saves");
         autoSave.addChangeListener(new javax.swing.event.ChangeListener() {
             public void stateChanged(javax.swing.event.ChangeEvent evt) {
                 autoSaveStateChanged(evt);

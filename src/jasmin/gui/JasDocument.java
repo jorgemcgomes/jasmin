@@ -30,7 +30,7 @@ public final class JasDocument extends javax.swing.JPanel implements Runnable {
     /**
      * The line which is currently executed.
      */
-    private int markedLine = 0;
+    private volatile int markedLine = 0;
     private SyntaxHighlighter highlighter = null;
     private MemoryTableModel model = null;
     private final LinkedList<IGuiModule> modules;
@@ -39,31 +39,29 @@ public final class JasDocument extends javax.swing.JPanel implements Runnable {
     public DataSpace data = null;
     public Parser parser = null;
     private LinkedList<RegisterPanel> registerPanels = null;
-    private ArrayList<LineNumber> lineNumbers = null;
-    private int lastHeight = 0;
-    private Semaphore lineNumbersUpdating;
+    private volatile ArrayList<LineNumber> lineNumbers = null;
+    private volatile int lastHeight = 0;
+    private volatile Semaphore lineNumbersUpdating;
     // This was supposed to enable viewing a detailed history of which memory cell or register was changed
     // how long ago. That was never implemented, however; just leave lastSteps = 1 for now.
-    private int lastSteps = 1;
-    public boolean[] cachedLineDone;
+    private volatile int lastSteps = 1;
+    public volatile boolean[] cachedLineDone;
     /**
      * The UndoManager is used for the source editor.
      */
     public UndoManager undoManager = null;
     /* Is true while the assembler program is running. */
-    public boolean running;
+    public volatile boolean running;
     /**
      * The frame in which this document is.
      */
     public MainFrame frame = null;
     private HelpBrowser helpBrowser = null;
     private FpuPanel fpuPanel = null;
-    private Thread runningThread = null;
-    private File snapshot = null;
-    private String lastPathCode = null;
-    private String lastPathMem = null;
-
-    private File lastTempSave = null;
+    private volatile Thread runningThread = null;
+    private volatile File snapshot = null;
+    private volatile String lastPathCode = null;
+    private volatile String lastPathMem = null;
 
     /**
      * Creates a new Document.
@@ -298,6 +296,7 @@ public final class JasDocument extends javax.swing.JPanel implements Runnable {
             frame.putProperty("lastpath.asm", file.getPath());
             writeFile(file);
             setTitle(file.getName());
+            frame.saveProperties();
 
         }
     }
@@ -313,17 +312,8 @@ public final class JasDocument extends javax.swing.JPanel implements Runnable {
     public void tempSave() {
         int auto = frame.getProperty("autosave", 1);
         if (auto == 1) {
-            File home = new File(System.getProperty("user.home"));
-            File dir = new File(home, "Jasmin");
-            dir.mkdir();
-            SimpleDateFormat df = new SimpleDateFormat("HH-mm-ss");
-            String name = "jasmin-" + df.format(new Date()) + ".asm";
-            File temp = new File(dir, name);
+            File temp = new File(System.getProperty("user.home") + File.separator + ".jasmintemp.asm");
             writeFile(temp);
-            if (lastTempSave != null) {
-                lastTempSave.delete();
-            }
-            lastTempSave = temp;
         }
     }
 
@@ -336,6 +326,21 @@ public final class JasDocument extends javax.swing.JPanel implements Runnable {
             } catch (Exception ex) {
                 JOptionPane.showMessageDialog(this, ex.toString());
             }
+        }
+    }
+
+    public void loadFile(File file) {
+        try {
+            BufferedReader in = new BufferedReader(new FileReader(file));
+            char[] data = new char[(int) file.length()];
+            in.read(data);
+            String text = new String(data);
+            getEditor().setText(text);
+            setTitle(file.getName());
+            in.close();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            JOptionPane.showMessageDialog(this, ex.toString());
         }
     }
 
@@ -449,22 +454,9 @@ public final class JasDocument extends javax.swing.JPanel implements Runnable {
             if (file != null) {
                 lastPathCode = file.getPath();
                 frame.putProperty("lastpath.asm", lastPathCode);
-                try {
-                    BufferedReader in = new BufferedReader(new FileReader(file));
-                    char[] data = new char[(int) file.length()];
-                    in.read(data);
-                    String text = new String(data);
-                    getEditor().setText(text);
-                    setTitle(file.getName());
-                    in.close();
-                    return true;
-                } catch (Exception ex) {
-                    ex.printStackTrace();
-                    JOptionPane.showMessageDialog(this, ex.toString());
-                }
-
+                frame.saveProperties();
+                loadFile(file);
             }
-
         }
         return false;
     }
@@ -512,7 +504,7 @@ public final class JasDocument extends javax.swing.JPanel implements Runnable {
                     int delay = frame.getDelay();
                     try {
                         Thread.sleep(delay);
-                    } catch(Exception ex) {
+                    } catch (Exception ex) {
                         // nothing bad happens -- do nothing
                     }
                 } catch (Exception ex) {

@@ -456,6 +456,7 @@ public final class JasDocument extends javax.swing.JPanel implements Runnable {
                 frame.putProperty("lastpath.asm", lastPathCode);
                 frame.saveProperties();
                 loadFile(file);
+                return true;
             }
         }
         return false;

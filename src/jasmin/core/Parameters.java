@@ -436,5 +436,15 @@ public class Parameters {
 			System.out.println("arg: " + arg(i) + " type: " + Op.humanName(type(i)) + " size: " + size(i));
 		}
 	}
-	
+
+	/**
+	 * Updates calculated addresses to account for dataspace changes.
+	 */
+	public void updateAdresses() {
+		for (FullArgument arg : argument) {
+			if (arg != null) {
+				arg.calculateAddress(dsp);
+			}
+		}
+	}
 }

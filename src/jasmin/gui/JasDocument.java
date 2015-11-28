@@ -362,7 +362,7 @@ public final class JasDocument extends javax.swing.JPanel implements Runnable {
             }
         });
         if (lastPathMem == null) {
-            frame.getProperty("lastpath.mem");
+            lastPathMem = frame.getProperty("lastpath.mem");
         }
         if (lastPathMem != null) {
             frame.fileChooser.setSelectedFile(new File(lastPathMem));
@@ -403,7 +403,7 @@ public final class JasDocument extends javax.swing.JPanel implements Runnable {
             }
         });
         if (lastPathMem == null) {
-            frame.getProperty("lastpath.mem");
+            lastPathMem = frame.getProperty("lastpath.mem");
         }
         if (lastPathMem != null) {
             frame.fileChooser.setSelectedFile(new File(lastPathMem));
@@ -444,7 +444,7 @@ public final class JasDocument extends javax.swing.JPanel implements Runnable {
             }
         });
         if (lastPathCode == null) {
-            frame.getProperty("lastpath.asm");
+            lastPathCode = frame.getProperty("lastpath.asm");
         }
         if (lastPathCode != null) {
             frame.fileChooser.setSelectedFile(new File(lastPathCode));

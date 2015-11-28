@@ -203,20 +203,20 @@ public class CalculatedAddress {
 		// (index*scale)
 		if (pIndexScale.matcher(s).matches()) {
 			index = dsp.getRegisterArgument(s.substring(0, s.indexOf("*")));
-			scale = Integer.valueOf(s.substring(s.indexOf("*") + 1));
+			scale = Integer.parseInt(s.substring(s.indexOf("*") + 1));
 			return null;
 		}
 		// (index*scale) + displacement
 		if (pIndexScalePlusDisplacement.matcher(s).matches()) {
 			index = dsp.getRegisterArgument(s.substring(0, s.indexOf("*")));
-			scale = Integer.valueOf(s.substring(s.indexOf("*") + 1, s.indexOf("+")));
-			displacement = Integer.valueOf(s.substring(s.indexOf("+") + 1));
+			scale = Integer.parseInt(s.substring(s.indexOf("*") + 1, s.indexOf("+")));
+			displacement = Integer.parseInt(s.substring(s.indexOf("+") + 1));
 			return null;
 		}
 		if (pIndexScaleMinusDisplacement.matcher(s).matches()) {
 			index = dsp.getRegisterArgument(s.substring(0, s.indexOf("*")));
-			scale = Integer.valueOf(s.substring(s.indexOf("*") + 1, s.indexOf("-")));
-			displacement = -Integer.valueOf(s.substring(s.indexOf("-") + 1));
+			scale = Integer.parseInt(s.substring(s.indexOf("*") + 1, s.indexOf("-")));
+			displacement = -Integer.parseInt(s.substring(s.indexOf("-") + 1));
 			return null;
 		}
 		// base + index
@@ -227,14 +227,14 @@ public class CalculatedAddress {
 		if (pBaseIndexPlusDisplacement.matcher(s).matches()) {
 			base = dsp.getRegisterArgument(s.substring(0, s.indexOf("+")));
 			index = dsp.getRegisterArgument(s.substring(s.indexOf("+") + 1, s.lastIndexOf("+")));
-			displacement = Integer.valueOf(s.substring(s.lastIndexOf("+") + 1));
+			displacement = Integer.parseInt(s.substring(s.lastIndexOf("+") + 1));
 			scale = 1;
 			return null;
 		}
 		if (pBaseIndexMinusDisplacement.matcher(s).matches()) {
 			base = dsp.getRegisterArgument(s.substring(0, s.indexOf("+")));
 			index = dsp.getRegisterArgument(s.substring(s.indexOf("+") + 1, s.lastIndexOf("-")));
-			displacement = -Integer.valueOf(s.substring(s.lastIndexOf("-") + 1));
+			displacement = -Integer.parseInt(s.substring(s.lastIndexOf("-") + 1));
 			scale = 1;
 			return null;
 		}
@@ -246,15 +246,15 @@ public class CalculatedAddress {
 		if (pBaseIndexScalePlusDisplacement.matcher(s).matches()) {
 			base = dsp.getRegisterArgument(s.substring(0, s.indexOf("+")));
 			index = dsp.getRegisterArgument(s.substring(s.indexOf("+") + 1, s.indexOf("*")));
-			scale = Integer.valueOf(s.substring(s.indexOf("*") + 1, s.lastIndexOf("+")));
-			displacement = Integer.valueOf(s.substring(s.lastIndexOf("+") + 1));
+			scale = Integer.parseInt(s.substring(s.indexOf("*") + 1, s.lastIndexOf("+")));
+			displacement = Integer.parseInt(s.substring(s.lastIndexOf("+") + 1));
 			return null;
 		}
 		if (pBaseIndexScaleMinusDisplacement.matcher(s).matches()) {
 			base = dsp.getRegisterArgument(s.substring(0, s.indexOf("+")));
 			index = dsp.getRegisterArgument(s.substring(s.indexOf("+") + 1, s.indexOf("*")));
-			scale = Integer.valueOf(s.substring(s.indexOf("*") + 1, s.lastIndexOf("-")));
-			displacement = -Integer.valueOf(s.substring(s.lastIndexOf("-") + 1));
+			scale = Integer.parseInt(s.substring(s.indexOf("*") + 1, s.lastIndexOf("-")));
+			displacement = -Integer.parseInt(s.substring(s.lastIndexOf("-") + 1));
 			return null;
 		}
 		// System.out.println("Malformed address: "+s);

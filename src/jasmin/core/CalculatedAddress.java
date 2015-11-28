@@ -184,7 +184,7 @@ public class CalculatedAddress {
 		}
 		if (pBaseMinusDisplacement.matcher(s).matches()) {
 			base = dsp.getRegisterArgument(s.substring(0, s.indexOf("-")));
-			displacement = -Integer.valueOf(s.substring(s.indexOf("-") + 1));
+			displacement = -Integer.parseInt(s.substring(s.indexOf("-") + 1));
 			return null;
 		}
                 // displacement + constant

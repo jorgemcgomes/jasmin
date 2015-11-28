@@ -167,7 +167,7 @@ public class CalculatedAddress {
 		scale = displacement = 0;
 		// displacement
 		if (Parser.pDecimal.matcher(s).matches()) {
-			displacement = Integer.valueOf(s);
+			displacement = Integer.parseInt(s);
 			return null;
 		}
                 
@@ -179,7 +179,7 @@ public class CalculatedAddress {
 		// base + displacement
 		if (pBasePlusDisplacement.matcher(s).matches()) {
 			base = dsp.getRegisterArgument(s.substring(0, s.indexOf("+")));
-			displacement = Integer.valueOf(s.substring(s.indexOf("+") + 1));
+			displacement = Integer.parseInt(s.substring(s.indexOf("+") + 1));
 			return null;
 		}
 		if (pBaseMinusDisplacement.matcher(s).matches()) {

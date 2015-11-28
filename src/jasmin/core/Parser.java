@@ -580,7 +580,7 @@ public class Parser {
 			} catch (NumberFormatException e) {
 				return Op.ERROR;
 			}
-			return Op.getDefinition(Op.IMM, getOperandSize(Long.valueOf(operand)));
+			return Op.getDefinition(Op.IMM, getOperandSize(Long.parseLong(operand)));
 		}
 		// floating-point constant
 		if (pFloat.matcher(operand).matches()) {
@@ -701,7 +701,7 @@ public class Parser {
 				size = 1;
 			} else if ((operand & 65535) == operand) {
 				size = 2;
-			} else if ((operand & Long.valueOf("4294967295")) == operand) {
+			} else if ((operand & Long.parseLong("4294967295")) == operand) {
 				size = 4;
 			} else {
 				size = 8;
@@ -737,7 +737,7 @@ public class Parser {
 		} else if (Op.matches(type, Op.REG)) {
 			size = dataspace.getRegisterSize(operand);
 		} else if (Op.matches(type, Op.IMM)) {
-			long arg = Long.valueOf(operand);
+			long arg = Long.parseLong(operand);
 			size = getOperandSize(arg);
 		} else if (Op.matches(type, Op.FPUREG)) {
 			size = 8;

@@ -299,7 +299,7 @@ public class Fpu {
 	}
 	
 	public int getAddress(String fpuregister) {
-		return Integer.valueOf(fpuregister.substring(2));
+		return Integer.parseInt(fpuregister.substring(2));
 	}
 	
 	public double get(int relativePosition) {

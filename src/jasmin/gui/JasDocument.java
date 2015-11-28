@@ -23,7 +23,7 @@ import javax.swing.undo.UndoManager;
  *
  * @author Kai Orend
  */
-public final class JasDocument extends javax.swing.JPanel implements Runnable {
+public final class JasDocument extends javax.swing.JPanel {
 
     private static final long serialVersionUID = 1L;
     private String title = "new document";
@@ -477,64 +477,63 @@ public final class JasDocument extends javax.swing.JPanel implements Runnable {
     }
 
     /**
-     * This method is used to execute the assembler by the new thread.
-     */
-    public void run() {
-        int numberOfLines = highlighter.getNumberOfLines();
-        cachedLineDone = new boolean[numberOfLines];
-        parser.clearCache(numberOfLines);
-        // If the currentline is at a breakpoint, the break point should be skipped.
-        boolean skipbreakpoint = false;
-        if (isBreakPoint(data.getInstructionPointer())) {
-            skipbreakpoint = true;
-        }
-        int lineNumber = data.getInstructionPointer();
-        while ((lineNumber < numberOfLines)) {
-            if (!running) {
-                break;
-            }
-            if (isBreakPoint(lineNumber) && !skipbreakpoint) {
-                break;
-            } else if (isBreakPoint(lineNumber) && skipbreakpoint) {
-                skipbreakpoint = false;
-            }
-            if ((lineNumber < numberOfLines)) {
-                data.setInstructionPointer(lineNumber + 1);
-                try {
-                    executeLineNumber(lineNumber, true);
-                    int delay = frame.getDelay();
-                    try {
-                        Thread.sleep(delay);
-                    } catch (Exception ex) {
-                        // nothing bad happens -- do nothing
-                    }
-                } catch (Exception ex) {
-                    updateExecutionMark();
-                    scrollToExecutionMark();
-                    ErrorLabel.setText(ex.toString() + "");
-                    ex.printStackTrace();
-                    break;
-                }
-            }
-            lineNumber = data.getInstructionPointer();
-        }
-
-        data.updateDirty();
-        running = false;
-        //Thread.yield();
-        updateAll();
-        frame.checkButtonStates();
-        runningThread = null;
-    }
-
-    /**
      * Creates a new thread to run the assembler program in it.
      */
     public void runProgram() {
         tempSave();
         if ((runningThread == null) && !running) {
             running = true;
-            runningThread = new Thread(this);
+            runningThread = new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    int numberOfLines = highlighter.getNumberOfLines();
+                    cachedLineDone = new boolean[numberOfLines];
+                    parser.clearCache(numberOfLines);
+                    // If the currentline is at a breakpoint, the break point should be skipped.
+                    boolean skipbreakpoint = false;
+                    if (isBreakPoint(data.getInstructionPointer())) {
+                        skipbreakpoint = true;
+                    }
+                    int lineNumber = data.getInstructionPointer();
+                    while ((lineNumber < numberOfLines)) {
+                        if (!running) {
+                            break;
+                        }
+                        if (isBreakPoint(lineNumber) && !skipbreakpoint) {
+                            break;
+                        } else if (isBreakPoint(lineNumber) && skipbreakpoint) {
+                            skipbreakpoint = false;
+                        }
+                        if ((lineNumber < numberOfLines)) {
+                            data.setInstructionPointer(lineNumber + 1);
+                            try {
+                                executeLineNumber(lineNumber, true);
+                                int delay = frame.getDelay();
+                                try {
+                                    Thread.sleep(delay);
+                                } catch (Exception ex) {
+                                    // nothing bad happens -- do nothing
+                                }
+                            } catch (Exception ex) {
+                                updateExecutionMark();
+                                scrollToExecutionMark();
+                                ErrorLabel.setText(ex.toString() + "");
+                                ex.printStackTrace();
+                                break;
+                            }
+                        }
+                        lineNumber = data.getInstructionPointer();
+                    }
+
+                    data.updateDirty();
+                    running = false;
+                    //Thread.yield();
+                    updateAll();
+                    frame.checkButtonStates();
+                    runningThread = null;
+
+                }
+            });
             runningThread.start();
         }
     }

@@ -267,6 +267,7 @@ public class Parser {
 			JasminCommand command = commandCache[lineNumber];
 			if (command != null) {
 				Parameters p = paramCache[lineNumber];
+				p.updateAdresses();
 				command.execute(p);
 				if (dataspace.addressOutOfRange()) {
 					dataspace.clearAddressOutOfRange();

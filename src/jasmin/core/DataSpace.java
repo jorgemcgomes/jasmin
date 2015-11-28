@@ -72,7 +72,7 @@ public class DataSpace {
 	private static String[] prefixes = { "REP", "REPE", "REPZ", "REPNE", "REPNZ" };
 	
 	private static String prefixesMatchingString = CalculatedAddress.createMatchingString(prefixes);
-	public static Pattern prefixesMatchingPattern = Pattern.compile(prefixesMatchingString);
+	public static final Pattern prefixesMatchingPattern = Pattern.compile(prefixesMatchingString);
 	
 	public static final int BIN = 2;
 	public static final int HEX = 16;

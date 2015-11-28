@@ -24,9 +24,9 @@ public class MemoryTableModel implements TableModel {
 	
 	private boolean descending = false;
 	
-	public static byte BYTE = 1;
-	public static byte WORD = 2;
-	public static byte DWORD = 4;
+	public static final byte BYTE = 1;
+	public static final byte WORD = 2;
+	public static final byte DWORD = 4;
 	private byte mode = DWORD;
 	private JasDocument doc = null;
 	

@@ -107,12 +107,12 @@ public abstract class JasminCommand {
 		return false;
 	}
 	
-	protected static int CF = 1;
-	protected static int OF = 2;
-	protected static int SF = 4;
-	protected static int ZF = 8;
-	protected static int PF = 16;
-	protected static int AF = 32;
+	protected static final int CF = 1;
+	protected static final int OF = 2;
+	protected static final int SF = 4;
+	protected static final int ZF = 8;
+	protected static final int PF = 16;
+	protected static final int AF = 32;
 	
 	/**
 	 * a routine which automatically determines which flags are to be set

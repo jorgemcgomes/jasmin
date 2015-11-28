@@ -15,43 +15,43 @@ public class CalculatedAddress {
 	 * memory addresses)
 	 */
 	private static String registersMatchingString = createMatchingString(DataSpace.getRegisterList());
-	public static Pattern pRegisters = Pattern.compile(registersMatchingString);
+	public static final Pattern pRegisters = Pattern.compile(registersMatchingString);
 	
-        // address + constant
-        public static Pattern pAddressPlusConstant = Pattern.compile("[a-zA-Z0-9]+\\+\\d+");
-        // address - constant
-        public static Pattern pAddressMinusConstant = Pattern.compile("[a-zA-Z0-9]+\\-\\d+");
+	// address + constant
+	public static final Pattern pAddressPlusConstant = Pattern.compile("[a-zA-Z0-9]+\\+\\d+");
+	// address - constant
+	public static final Pattern pAddressMinusConstant = Pattern.compile("[a-zA-Z0-9]+\\-\\d+");
 	// base + displacement
-	public static Pattern pBasePlusDisplacement = Pattern.compile(registersMatchingString + "\\+\\d+");
+	public static final Pattern pBasePlusDisplacement = Pattern.compile(registersMatchingString + "\\+\\d+");
 	// base - displacement
-	public static Pattern pBaseMinusDisplacement = Pattern.compile(registersMatchingString + "\\-\\d+");
+	public static final Pattern pBaseMinusDisplacement = Pattern.compile(registersMatchingString + "\\-\\d+");
 	// (index*scale)
-	public static Pattern pIndexScale = Pattern.compile(registersMatchingString + "\\*\\d+");
+	public static final Pattern pIndexScale = Pattern.compile(registersMatchingString + "\\*\\d+");
 	// (index*scale) + displacement
-	public static Pattern pIndexScalePlusDisplacement = Pattern.compile(registersMatchingString
+	public static final Pattern pIndexScalePlusDisplacement = Pattern.compile(registersMatchingString
 		+ "\\*\\d+\\+\\d+");
 	// (index*scale) - displacement
-	public static Pattern pIndexScaleMinusDisplacement = Pattern.compile(registersMatchingString
+	public static final Pattern pIndexScaleMinusDisplacement = Pattern.compile(registersMatchingString
 		+ "\\*\\d+\\-\\d+");
 	// base + index + displacement
-	public static Pattern pBaseIndexPlusDisplacement = Pattern.compile(registersMatchingString + "\\+"
+	public static final Pattern pBaseIndexPlusDisplacement = Pattern.compile(registersMatchingString + "\\+"
 		+ registersMatchingString
 		+ "\\+\\d+");
 	// base + index - displacement
-	public static Pattern pBaseIndexMinusDisplacement = Pattern.compile(registersMatchingString + "\\+"
+	public static final Pattern pBaseIndexMinusDisplacement = Pattern.compile(registersMatchingString + "\\+"
 		+ registersMatchingString
 		+ "\\-\\d+");
 	// base + (index*scale)
-	public static Pattern pBaseIndexScale = Pattern
+	public static final Pattern pBaseIndexScale = Pattern
 		.compile(registersMatchingString + "\\+" + registersMatchingString + "\\*\\d+");
 	// base + index // implicit scale: *1
-	public static Pattern pBaseIndex = Pattern.compile(registersMatchingString + "[\\+\\-]"
+	public static final Pattern pBaseIndex = Pattern.compile(registersMatchingString + "[\\+\\-]"
 		+ registersMatchingString);
 	// base + (index*scale) + displacement
-	public static Pattern pBaseIndexScalePlusDisplacement = Pattern.compile(registersMatchingString + "\\+"
+	public static final Pattern pBaseIndexScalePlusDisplacement = Pattern.compile(registersMatchingString + "\\+"
 		+ registersMatchingString + "\\*\\d+\\+\\d+");
 	// base + (index*scale) - displacement
-	public static Pattern pBaseIndexScaleMinusDisplacement = Pattern.compile(registersMatchingString + "\\+"
+	public static final Pattern pBaseIndexScaleMinusDisplacement = Pattern.compile(registersMatchingString + "\\+"
 		+ registersMatchingString + "\\*\\d+\\-\\d+");
 	
 	/**

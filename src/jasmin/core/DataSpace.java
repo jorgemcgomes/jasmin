@@ -72,7 +72,7 @@ public class DataSpace {
 	private static String[] prefixes = { "REP", "REPE", "REPZ", "REPNE", "REPNZ" };
 	
 	private static String prefixesMatchingString = CalculatedAddress.createMatchingString(prefixes);
-	public static Pattern prefixesMatchingPattern = Pattern.compile(prefixesMatchingString);
+	public static final Pattern prefixesMatchingPattern = Pattern.compile(prefixesMatchingString);
 	
 	public static final int BIN = 2;
 	public static final int HEX = 16;
@@ -696,7 +696,7 @@ public class DataSpace {
 	 * @return the MemCellInfo object associated with the memory cell with the specified index
 	 */
 	public MemCellInfo memInfo(Address a) {
-		Integer index = new Integer(a.address);
+		Integer index = a.address;
 		if (Op.matches(a.type, Op.MEM)) {
 			return memInfo.get(index);
 		} else if (Op.matches(a.type, Op.REG)) {
@@ -706,7 +706,7 @@ public class DataSpace {
 	}
 	
 	private void memInfoPut(Address a, MemCellInfo info) {
-		Integer index = new Integer(a.address);
+		Integer index = a.address;
 		if (Op.matches(a.type, Op.MEM)) {
 			if ((a.address >= (MEMSIZE + memAddressStart)) || (a.address < memAddressStart)) {
 				return;
@@ -718,7 +718,7 @@ public class DataSpace {
 	}
 	
 	private void memInfoDelete(Address a) {
-		Integer index = new Integer(a.address);
+		Integer index = a.address;
 		if (Op.matches(a.type, Op.MEM)) {
 			if ((a.address >= (MEMSIZE + memAddressStart)) || (a.address < memAddressStart)) {
 				return;
@@ -880,7 +880,7 @@ public class DataSpace {
 	
 	private long getInitial(String src, int type, int size, boolean signed) {
 		if ((type & Op.IMM) != 0) {
-			long value = Long.valueOf(src);
+			long value = Long.parseLong(src);
 			if (signed) {
 				return value;
 			} else {

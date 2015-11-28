@@ -15,43 +15,43 @@ public class CalculatedAddress {
 	 * memory addresses)
 	 */
 	private static String registersMatchingString = createMatchingString(DataSpace.getRegisterList());
-	public static Pattern pRegisters = Pattern.compile(registersMatchingString);
+	public static final Pattern pRegisters = Pattern.compile(registersMatchingString);
 	
-        // address + constant
-        public static Pattern pAddressPlusConstant = Pattern.compile("[a-zA-Z0-9]+\\+\\d+");
-        // address - constant
-        public static Pattern pAddressMinusConstant = Pattern.compile("[a-zA-Z0-9]+\\-\\d+");
+	// address + constant
+	public static final Pattern pAddressPlusConstant = Pattern.compile("[a-zA-Z0-9]+\\+\\d+");
+	// address - constant
+	public static final Pattern pAddressMinusConstant = Pattern.compile("[a-zA-Z0-9]+\\-\\d+");
 	// base + displacement
-	public static Pattern pBasePlusDisplacement = Pattern.compile(registersMatchingString + "\\+\\d+");
+	public static final Pattern pBasePlusDisplacement = Pattern.compile(registersMatchingString + "\\+\\d+");
 	// base - displacement
-	public static Pattern pBaseMinusDisplacement = Pattern.compile(registersMatchingString + "\\-\\d+");
+	public static final Pattern pBaseMinusDisplacement = Pattern.compile(registersMatchingString + "\\-\\d+");
 	// (index*scale)
-	public static Pattern pIndexScale = Pattern.compile(registersMatchingString + "\\*\\d+");
+	public static final Pattern pIndexScale = Pattern.compile(registersMatchingString + "\\*\\d+");
 	// (index*scale) + displacement
-	public static Pattern pIndexScalePlusDisplacement = Pattern.compile(registersMatchingString
+	public static final Pattern pIndexScalePlusDisplacement = Pattern.compile(registersMatchingString
 		+ "\\*\\d+\\+\\d+");
 	// (index*scale) - displacement
-	public static Pattern pIndexScaleMinusDisplacement = Pattern.compile(registersMatchingString
+	public static final Pattern pIndexScaleMinusDisplacement = Pattern.compile(registersMatchingString
 		+ "\\*\\d+\\-\\d+");
 	// base + index + displacement
-	public static Pattern pBaseIndexPlusDisplacement = Pattern.compile(registersMatchingString + "\\+"
+	public static final Pattern pBaseIndexPlusDisplacement = Pattern.compile(registersMatchingString + "\\+"
 		+ registersMatchingString
 		+ "\\+\\d+");
 	// base + index - displacement
-	public static Pattern pBaseIndexMinusDisplacement = Pattern.compile(registersMatchingString + "\\+"
+	public static final Pattern pBaseIndexMinusDisplacement = Pattern.compile(registersMatchingString + "\\+"
 		+ registersMatchingString
 		+ "\\-\\d+");
 	// base + (index*scale)
-	public static Pattern pBaseIndexScale = Pattern
+	public static final Pattern pBaseIndexScale = Pattern
 		.compile(registersMatchingString + "\\+" + registersMatchingString + "\\*\\d+");
 	// base + index // implicit scale: *1
-	public static Pattern pBaseIndex = Pattern.compile(registersMatchingString + "[\\+\\-]"
+	public static final Pattern pBaseIndex = Pattern.compile(registersMatchingString + "[\\+\\-]"
 		+ registersMatchingString);
 	// base + (index*scale) + displacement
-	public static Pattern pBaseIndexScalePlusDisplacement = Pattern.compile(registersMatchingString + "\\+"
+	public static final Pattern pBaseIndexScalePlusDisplacement = Pattern.compile(registersMatchingString + "\\+"
 		+ registersMatchingString + "\\*\\d+\\+\\d+");
 	// base + (index*scale) - displacement
-	public static Pattern pBaseIndexScaleMinusDisplacement = Pattern.compile(registersMatchingString + "\\+"
+	public static final Pattern pBaseIndexScaleMinusDisplacement = Pattern.compile(registersMatchingString + "\\+"
 		+ registersMatchingString + "\\*\\d+\\-\\d+");
 	
 	/**
@@ -167,7 +167,7 @@ public class CalculatedAddress {
 		scale = displacement = 0;
 		// displacement
 		if (Parser.pDecimal.matcher(s).matches()) {
-			displacement = Integer.valueOf(s);
+			displacement = Integer.parseInt(s);
 			return null;
 		}
                 
@@ -179,12 +179,12 @@ public class CalculatedAddress {
 		// base + displacement
 		if (pBasePlusDisplacement.matcher(s).matches()) {
 			base = dsp.getRegisterArgument(s.substring(0, s.indexOf("+")));
-			displacement = Integer.valueOf(s.substring(s.indexOf("+") + 1));
+			displacement = Integer.parseInt(s.substring(s.indexOf("+") + 1));
 			return null;
 		}
 		if (pBaseMinusDisplacement.matcher(s).matches()) {
 			base = dsp.getRegisterArgument(s.substring(0, s.indexOf("-")));
-			displacement = -Integer.valueOf(s.substring(s.indexOf("-") + 1));
+			displacement = -Integer.parseInt(s.substring(s.indexOf("-") + 1));
 			return null;
 		}
                 // displacement + constant
@@ -203,20 +203,20 @@ public class CalculatedAddress {
 		// (index*scale)
 		if (pIndexScale.matcher(s).matches()) {
 			index = dsp.getRegisterArgument(s.substring(0, s.indexOf("*")));
-			scale = Integer.valueOf(s.substring(s.indexOf("*") + 1));
+			scale = Integer.parseInt(s.substring(s.indexOf("*") + 1));
 			return null;
 		}
 		// (index*scale) + displacement
 		if (pIndexScalePlusDisplacement.matcher(s).matches()) {
 			index = dsp.getRegisterArgument(s.substring(0, s.indexOf("*")));
-			scale = Integer.valueOf(s.substring(s.indexOf("*") + 1, s.indexOf("+")));
-			displacement = Integer.valueOf(s.substring(s.indexOf("+") + 1));
+			scale = Integer.parseInt(s.substring(s.indexOf("*") + 1, s.indexOf("+")));
+			displacement = Integer.parseInt(s.substring(s.indexOf("+") + 1));
 			return null;
 		}
 		if (pIndexScaleMinusDisplacement.matcher(s).matches()) {
 			index = dsp.getRegisterArgument(s.substring(0, s.indexOf("*")));
-			scale = Integer.valueOf(s.substring(s.indexOf("*") + 1, s.indexOf("-")));
-			displacement = -Integer.valueOf(s.substring(s.indexOf("-") + 1));
+			scale = Integer.parseInt(s.substring(s.indexOf("*") + 1, s.indexOf("-")));
+			displacement = -Integer.parseInt(s.substring(s.indexOf("-") + 1));
 			return null;
 		}
 		// base + index
@@ -227,14 +227,14 @@ public class CalculatedAddress {
 		if (pBaseIndexPlusDisplacement.matcher(s).matches()) {
 			base = dsp.getRegisterArgument(s.substring(0, s.indexOf("+")));
 			index = dsp.getRegisterArgument(s.substring(s.indexOf("+") + 1, s.lastIndexOf("+")));
-			displacement = Integer.valueOf(s.substring(s.lastIndexOf("+") + 1));
+			displacement = Integer.parseInt(s.substring(s.lastIndexOf("+") + 1));
 			scale = 1;
 			return null;
 		}
 		if (pBaseIndexMinusDisplacement.matcher(s).matches()) {
 			base = dsp.getRegisterArgument(s.substring(0, s.indexOf("+")));
 			index = dsp.getRegisterArgument(s.substring(s.indexOf("+") + 1, s.lastIndexOf("-")));
-			displacement = -Integer.valueOf(s.substring(s.lastIndexOf("-") + 1));
+			displacement = -Integer.parseInt(s.substring(s.lastIndexOf("-") + 1));
 			scale = 1;
 			return null;
 		}
@@ -246,15 +246,15 @@ public class CalculatedAddress {
 		if (pBaseIndexScalePlusDisplacement.matcher(s).matches()) {
 			base = dsp.getRegisterArgument(s.substring(0, s.indexOf("+")));
 			index = dsp.getRegisterArgument(s.substring(s.indexOf("+") + 1, s.indexOf("*")));
-			scale = Integer.valueOf(s.substring(s.indexOf("*") + 1, s.lastIndexOf("+")));
-			displacement = Integer.valueOf(s.substring(s.lastIndexOf("+") + 1));
+			scale = Integer.parseInt(s.substring(s.indexOf("*") + 1, s.lastIndexOf("+")));
+			displacement = Integer.parseInt(s.substring(s.lastIndexOf("+") + 1));
 			return null;
 		}
 		if (pBaseIndexScaleMinusDisplacement.matcher(s).matches()) {
 			base = dsp.getRegisterArgument(s.substring(0, s.indexOf("+")));
 			index = dsp.getRegisterArgument(s.substring(s.indexOf("+") + 1, s.indexOf("*")));
-			scale = Integer.valueOf(s.substring(s.indexOf("*") + 1, s.lastIndexOf("-")));
-			displacement = -Integer.valueOf(s.substring(s.lastIndexOf("-") + 1));
+			scale = Integer.parseInt(s.substring(s.indexOf("*") + 1, s.lastIndexOf("-")));
+			displacement = -Integer.parseInt(s.substring(s.lastIndexOf("-") + 1));
 			return null;
 		}
 		// System.out.println("Malformed address: "+s);
@@ -275,7 +275,7 @@ public class CalculatedAddress {
 		for (String word : input) {
 			// Hack: EIP can't be accessed directly, so we don't count it as a register by excluding it
 			// from strings generated by this function.
-			if (word != "EIP") {
+			if (!word.equals("EIP")) {
 				if (!result.equals("(")) {
 					result += "|";
 				}

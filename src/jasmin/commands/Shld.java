@@ -17,7 +17,7 @@ public class Shld extends JasminCommand {
 		if (e != null) {
 			return e;
 		}
-		if ((Op.matches(p.type(2), Op.R8) && !(p.argument(2).equals(dataspace.CL)))
+		if ((Op.matches(p.type(2), Op.R8) && !(p.argument(2).address.equals(dataspace.CL)))
 			|| !Op.matches(p.type(2), Op.R8 | Op.I8)) {
 			return new ParseError(p.wholeLine, p.argument(2),
 				"third register must be CL or an 8-bit immediate");

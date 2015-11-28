@@ -213,7 +213,7 @@ public class HelpLoader {
 	 *        the name for the text file
 	 */
 	private void addToCache(JarInputStream fis, String mnemo) {
-		String text = new String();
+		String text = "";
 		byte[] buf = new byte[4096];
 		int i = 0;
 		try {
@@ -246,7 +246,7 @@ public class HelpLoader {
 			System.out.println("Warning! File '" + file + "' not found!");
 			return;
 		}
-		String text = new String();
+		String text = "";
 		byte[] buf = new byte[4096];
 		int i = 0;
 		try {

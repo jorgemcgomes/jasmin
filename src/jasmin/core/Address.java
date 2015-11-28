@@ -17,12 +17,30 @@ public class Address {
 	public LongWrapper shortcut;
 	public int rshift;
 	public long mask;
-	
-	public boolean equals(Address a) {
-		return (a.type == this.type) && (a.size == this.size) && (a.address == this.address)
-			&& (a.mask == this.mask);
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+
+		Address address1 = (Address) o;
+
+		if (type != address1.type) return false;
+		if (size != address1.size) return false;
+		if (address != address1.address) return false;
+		return mask == address1.mask;
+
 	}
-	
+
+	@Override
+	public int hashCode() {
+		int result = type;
+		result = 31 * result + size;
+		result = 31 * result + address;
+		result = 31 * result + (int) (mask ^ (mask >>> 32));
+		return result;
+	}
+
 	public Address(int aType, int aSize, int aAddress) {
 		type = aType;
 		size = aSize;

@@ -40,9 +40,19 @@ public class MainFrame extends javax.swing.JFrame {
                 putProperty("font.size", "12");
                 putProperty("memory", "4096");
                 putProperty("language", "en");
-                properties.store(new FileOutputStream(propfile), "Jasmin configuration file");
+                FileOutputStream out = new FileOutputStream(propfile);
+                try {
+                    properties.store(out, "Jasmin configuration file");
+                } finally {
+                    out.close();
+                }
             } else {
-                properties.load(new FileInputStream(propfile));
+                FileInputStream in = new FileInputStream(propfile);
+                try {
+                    properties.load(in);
+                } finally {
+                    in.close();
+                }
             }
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(this, "Could not open:" + propfile.toString() + "\n"
@@ -934,7 +944,12 @@ public class MainFrame extends javax.swing.JFrame {
             if (!propfile.exists()) {
                 propfile.createNewFile();
             }
-            properties.store(new FileOutputStream(propfile), "Jasmin configuration file");
+            FileOutputStream out = new FileOutputStream(propfile);
+            try {
+                properties.store(out, "Jasmin configuration file");
+            } finally {
+                out.close();
+            }
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(this, ex.toString());
             System.exit(1);

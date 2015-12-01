@@ -23,7 +23,7 @@ public class Parameters {
 	
 	public double fa, fb;
 	
-	protected DataSpace dsp;
+	public final DataSpace dsp;
 	protected Parser parser;
 	
 	public Parameters(DataSpace dataSpace, Parser p) {

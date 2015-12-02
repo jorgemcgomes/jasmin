@@ -17,6 +17,7 @@
 package jasmin.commands;
 
 import jasmin.core.*;
+import javax.swing.JOptionPane;
 
 public class Int extends jasmin.core.JasminCommand {
 
@@ -42,47 +43,68 @@ public class Int extends jasmin.core.JasminCommand {
 				handleLinuxSyscall(p);
 				break;
 			default:
-				throw new SyscallNotImplementedException("Unimplemented syscall: " + id);
+				// TODO: mechanism for handling interrupt errors: exceptions dont work here
 		}
 	}
 
 	private void handleLinuxSyscall(Parameters p) {
 		int function = (int) p.get(dataspace.EAX);
-		System.out.println(function);
 		switch (function) {
-			case 0:
-				Linux.handleRead(p);
+			case 3:
+				handleLinuxRead(p);
 				break;
+                        case 4:
+                                handleLinuxWrite(p);
+                            break;
 			default:
-				throw new SyscallNotImplementedException("Linux syscall: " + function);
+				// TODO: mechanism for handling interrupt errors: exceptions dont work here
 		}
 	}
 
-	private static class Linux {
-		public static void handleRead(Parameters p) {
-			String read;
-			int fd = (int) p.get(p.dsp.EBX);
-			int target = (int) p.get(p.dsp.ECX);
-			int maxLen = (int) p.get(p.dsp.EDX);
-			switch (fd) {
-				case 0:
-					read = readLine(maxLen);
-					break;
-				default:
-					throw new SyscallNotImplementedException("Linux read: " + fd);
+	private void handleLinuxRead(Parameters p) {
+		String read;
+		int fd = (int) p.get(p.dsp.EBX);
+		int target = (int) p.get(p.dsp.ECX);
+		int maxLen = (int) p.get(p.dsp.EDX);
+                if(fd == 0) {
+                    read = readStdin(maxLen);
+                } else {
+                    return; // TODO: mechanism for handling interrupt errors: exceptions dont work here
+                }
+		char[] chars = read.toCharArray();
+		Address argument = new Address(Op.MEM, 1, target);
+		// write the input to memory
+		for (int i = 0; i < chars.length; i++) {
+			if (i >= maxLen) {
+				break;
 			}
-			char[] chars = read.toCharArray();
-			Address argument = new Address(Op.MEM, 1, target);
-			// write the input to memory
-			for (int i = 0; i < chars.length; i++) {
-				if (i >= maxLen) {
-					break;
-				}
-				p.dsp.put(chars[i], argument, null);
-				argument.address++;
-			}
+			p.dsp.put(chars[i], argument, null);
+			argument.address++;
 		}
+                p.dsp.put(chars.length, p.dsp.EAX, null);
 	}
+                
+        private void handleLinuxWrite(Parameters p) {
+		int fd = (int) p.get(p.dsp.EBX);
+		int source = (int) p.get(p.dsp.ECX);
+		int maxLen = (int) p.get(p.dsp.EDX);
+                if(fd == 1 || fd == 2) {
+                    String buffer = "";
+                    for(int i = 0 ; i < maxLen ; i++) {
+                        Address src = new Address(Op.MEM, 1, source + i);
+                        char c = (char) p.get(src);
+                        buffer += c;
+                    }
+                    if(fd == 1) {
+                        showLineStdout(buffer);
+                    } else {
+                        showLineStderr(buffer);
+                    }
+                    p.dsp.put(buffer.length(), p.dsp.EAX, null);
+                } else {
+                    return; // TODO: mechanism for handling interrupt errors: exceptions dont work here
+                }        
+        }
 
 	private void handleDOSInterrupt(Parameters p) {
 		int function = (int) p.get(dataspace.AH);
@@ -94,7 +116,7 @@ public class Int extends jasmin.core.JasminCommand {
 			// read max input size from "byte [dx]"
 			int maxsize = (int) dataspace.getUpdate(argument, false);
 			// show dialog box, read user's input
-			char[] chars = readLine(maxsize - 1)
+			char[] chars = readStdin(maxsize - 1)
 					.concat("\0")// write NULL byte after input string
 					.toCharArray();
 			// write actual size of input into the byte after the definition of max size
@@ -111,8 +133,8 @@ public class Int extends jasmin.core.JasminCommand {
 		}
 	}
 
-	private static String readLine(int maxLength) {
-		String input = javax.swing.JOptionPane.showInputDialog("Input (max. " + maxLength + " characters):");
+	private static String readStdin(int maxLength) {
+		String input = JOptionPane.showInputDialog(null, "Input (max. " + maxLength + " characters):", "stdin", JOptionPane.QUESTION_MESSAGE);
 		if (input != null) {
 			if (input.length() > maxLength) {
 				return input.substring(0, maxLength);
@@ -123,21 +145,11 @@ public class Int extends jasmin.core.JasminCommand {
 		return "";
 	}
 
-	public static class SyscallNotImplementedException extends RuntimeException {
-		public SyscallNotImplementedException() {
-		}
+	private static void showLineStdout(String s) {
+            JOptionPane.showMessageDialog(null, s, "stdout", JOptionPane.INFORMATION_MESSAGE);
+	}    
 
-		public SyscallNotImplementedException(String message) {
-			super(message);
-		}
-
-		public SyscallNotImplementedException(String message, Throwable cause) {
-			super(message, cause);
-		}
-
-		public SyscallNotImplementedException(Throwable cause) {
-			super(cause);
-		}
-	}
-
+	private static void showLineStderr(String s) {
+            JOptionPane.showMessageDialog(null, s, "stderr", JOptionPane.ERROR_MESSAGE);
+	}         
 }

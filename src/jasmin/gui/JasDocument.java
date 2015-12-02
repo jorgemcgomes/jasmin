@@ -62,6 +62,10 @@ public final class JasDocument extends javax.swing.JPanel {
     private volatile File snapshot = null;
     private volatile String lastPathCode = null;
     private volatile String lastPathMem = null;
+    
+    public static final long TEMP_SAVE_INTERVAL = 3000; // ms
+    private long lastTempSave = 0;
+    private boolean savedOnce = false;
 
     /**
      * Creates a new Document.
@@ -297,13 +301,15 @@ public final class JasDocument extends javax.swing.JPanel {
             writeFile(file);
             setTitle(file.getName());
             frame.saveProperties();
-
+            tempSave();
+            savedOnce = true;
         }
     }
 
     public void quickSave() {
-        if (lastPathCode != null) {
+        if (lastPathCode != null && savedOnce) {
             writeFile(new File(lastPathCode));
+            tempSave();
         } else {
             save();
         }
@@ -311,9 +317,10 @@ public final class JasDocument extends javax.swing.JPanel {
 
     public void tempSave() {
         int auto = frame.getProperty("autosave", 1);
-        if (auto == 1) {
+        if (auto == 1 && System.currentTimeMillis() - lastTempSave > TEMP_SAVE_INTERVAL) {
             File temp = new File(System.getProperty("user.home") + File.separator + ".jasmintemp.asm");
             writeFile(temp);
+            lastTempSave = System.currentTimeMillis();
         }
     }
 
